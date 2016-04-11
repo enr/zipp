@@ -1,0 +1,81 @@
+{
+	"version": 0,
+	"dependencies": [
+		{
+			"importpath": "github.com/codegangsta/cli",
+			"repository": "https://github.com/codegangsta/cli",
+			"revision": "71f57d300dd6a780ac1856c005c4b518cfd498ec",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/enr/clui",
+			"repository": "https://github.com/enr/clui",
+			"revision": "a608f7f156e0279a4b7585235fad1054ec987a30",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/enr/go-files/files",
+			"repository": "https://github.com/enr/go-files",
+			"revision": "c68ccccba7ac49960496a4d2355cf20732e2393e",
+			"branch": "master",
+			"path": "/files"
+		},
+		{
+			"importpath": "github.com/enr/go-zipext/zipext",
+			"repository": "https://github.com/enr/go-zipext",
+			"revision": "9b94743afd5c723381877e7f2a495eb9ef22f080",
+			"branch": "master",
+			"path": "/zipext"
+		},
+		{
+			"importpath": "github.com/enr/runcmd",
+			"repository": "https://github.com/enr/runcmd",
+			"revision": "c7ba37e9c07d154414e742e1802bf09fbc1bc965",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/extemporalgenome/slug",
+			"repository": "https://github.com/extemporalgenome/slug",
+			"revision": "0320c85e32e0015b090f08a5d1324d5ab6094f07",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/mattn/go-colorable",
+			"repository": "https://github.com/mattn/go-colorable",
+			"revision": "9cbef7c35391cca05f15f8181dc0b18bc9736dbb",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/mattn/go-isatty",
+			"repository": "https://github.com/mattn/go-isatty",
+			"revision": "56b76bdf51f7708750eac80fa38b952bb9f32639",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/mitchellh/colorstring",
+			"repository": "https://github.com/mitchellh/colorstring",
+			"revision": "8631ce90f28644f54aeedcb3e389a85174e067d1",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/subosito/gotenv",
+			"repository": "https://github.com/subosito/gotenv",
+			"revision": "61aa1800e632021fa192da0379ddb78bbd5390d9",
+			"branch": "master"
+		},
+		{
+			"importpath": "golang.org/x/text/transform",
+			"repository": "https://go.googlesource.com/text",
+			"revision": "5ee49cfe751141f8017047bab800d1f528ee3be1",
+			"branch": "master",
+			"path": "/transform"
+		},
+		{
+			"importpath": "golang.org/x/text/unicode/norm",
+			"repository": "https://go.googlesource.com/text",
+			"revision": "5ee49cfe751141f8017047bab800d1f528ee3be1",
+			"branch": "master",
+			"path": "/unicode/norm"
+		}
+	]
+}
