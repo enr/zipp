@@ -16,14 +16,14 @@
 		{
 			"importpath": "github.com/enr/go-files/files",
 			"repository": "https://github.com/enr/go-files",
-			"revision": "c68ccccba7ac49960496a4d2355cf20732e2393e",
+			"revision": "7336b98a33ba8c37c4dbf78705c52d70538a8db6",
 			"branch": "master",
 			"path": "/files"
 		},
 		{
 			"importpath": "github.com/enr/go-zipext/zipext",
 			"repository": "https://github.com/enr/go-zipext",
-			"revision": "76731fea0e2d7485c4beb3be1580112ca093ab83",
+			"revision": "22db20b398b6c22c2011ec150fbcb75531c433f1",
 			"branch": "master",
 			"path": "/zipext"
 		},
