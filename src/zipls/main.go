@@ -1,11 +1,5 @@
 package main
 
-// List zip contents
-
-// Grep zip contents
-// Grep between filenames in a zip archive.
-// TODO: potrebbe essere un'opzione di zipls
-// zipls --grep AbstractFactory my.jar
 import (
 	"archive/zip"
 	"fmt"
@@ -13,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/codegangsta/cli"
+	"github.com/enr/go-files/files"
 	"github.com/enr/go-zipext/zipext"
 	"github.com/mattn/go-colorable"
 	"github.com/mitchellh/colorstring"
@@ -22,7 +17,7 @@ const (
 	dirTemplate           = "%s\n"
 	lineTemplate          = "%s\n"
 	lineSizeTemplate      = "%s (%s)\n"
-	missingParamInputPath = "ops!"
+	missingParamInputPath = "Oops... I was expecting at least 1 argument: the path to zip."
 )
 
 var (
@@ -36,12 +31,6 @@ Build date: %s
 	appVersion = fmt.Sprintf(versionTemplate, version, gitCommit, buildTime)
 )
 
-// list zip contents.
-
-// TODO: inglobare zipgrep con opzioni:
-// zipls --grep
-// zipls --skip
-// TODO: opzione -d solo directories.
 func main() {
 	runApp(os.Args)
 }
@@ -55,7 +44,13 @@ func mainAction(c *cli.Context) {
 	grepColor = c.String("grep")
 
 	fileName := c.Args()[0]
-	// check exists, readable
+
+	if !files.Exists(fileName) {
+		fmt.Fprintf(stderr, "Invalid file: %s\n", fileName)
+		cli.ShowAppHelp(c)
+		os.Exit(3)
+	}
+
 	err := zipext.Walk(fileName, func(f *zip.File, err error) error {
 		if err != nil {
 			fmt.Fprintf(stderr, "Error reading file %s\n", err)
