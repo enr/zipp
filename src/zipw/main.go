@@ -2,17 +2,18 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"io/ioutil"
+	"os"
 	"path"
 	"path/filepath"
 	"strings"
 
-	"github.com/codegangsta/cli"
 	"github.com/enr/clui"
-	"github.com/mattn/go-colorable"
 	"github.com/enr/go-files/files"
 	"github.com/enr/go-zipext/zipext"
+	"github.com/mattn/go-colorable"
+	"github.com/urfave/cli"
+	"gopkg.in/yaml.v2"
 )
 
 const (
@@ -20,7 +21,7 @@ const (
 )
 
 var (
-	ui *clui.Clui
+	ui              *clui.Clui
 	versionTemplate = `%s
 Revision: %s
 Build date: %s
@@ -44,7 +45,14 @@ func main() {
 	runApp(os.Args)
 }
 
-func mainAction(c *cli.Context) {
+
+type Params struct {
+	FileToAdd string `yaml:"file"`
+	InnerPath string `yaml:"inner"`
+	ZipPath string `yaml:"zip"`
+}
+
+func mainAction(c *cli.Context) error {
 	verbosityLevel := clui.VerbosityLevelMedium
 	if c.Bool("verbose") {
 		verbosityLevel = clui.VerbosityLevelHigh
@@ -54,9 +62,47 @@ func mainAction(c *cli.Context) {
 	}
 	ui = getUI(verbosityLevel)
 
-	showHelp := func() {
-		cli.ShowAppHelp(c)
+	// showHelp := func() {
+	// 	cli.ShowAppHelp(c)
+	// }
+
+	params, err := loadParams(c)
+	if err != nil {
+		return err
 	}
+	ui.Confidentialf("file=%s inner=%s zip=%s", params.FileToAdd, params.InnerPath, params.ZipPath)
+
+	if !files.Exists(params.FileToAdd) {
+		return exitErrorf(1, `Invalid path "%s". Exit`, params.FileToAdd)
+	}
+
+	tmp, err := extractToTmp(params.ZipPath)
+	// clean up
+	defer os.RemoveAll(tmp)
+	if err != nil {
+		return exitErrorf(1, "error processing %s: %s", params.ZipPath, err.Error())
+	}
+
+	err = addFileToTmp(tmp, params.FileToAdd, params.InnerPath)
+	if err != nil {
+		return exitErrorf(1, "error processing %s: %s", params.FileToAdd, err.Error())
+	}
+
+	err = zipTmp(tmp, params.ZipPath)
+	if err != nil {
+		return exitErrorf(1, "error zipping %s to %s: %s", tmp, params.ZipPath, err.Error())
+	}
+
+	return nil
+}
+
+func exitErrorf(exitCode int, template string, args ...interface{}) error {
+	ui.Errorf(`Something gone wrong:`)
+	return cli.NewExitError(fmt.Sprintf(template, args...), exitCode)
+}
+
+func loadParams(c *cli.Context) (Params, error) {
+	params := Params{}
 
 	fileToAdd := c.String("file")
 	innerPath := c.String("inner")
@@ -65,33 +111,30 @@ func mainAction(c *cli.Context) {
 
 	ui.Confidentialf("file=%s inner=%s zip=%s params=%s", fileToAdd, innerPath, zipPath, paramsFile)
 
-	if !files.Exists(fileToAdd) {
-		ui.Errorf("%s not found. exit", fileToAdd)
-		showHelp()
-		os.Exit(1)
+	if fileToAdd == "" && paramsFile == "" {
+		upe, _ := ui.QuestionWithDefault("Do you want to use a params file?", "yes")
+		upe = strings.ToLower(upe)
+		if upe == "yes" || upe == "y" {
+			paramsFile, _ = ui.QuestionWithDefault("Which params file?", "zipw.yml")
+			yamlFile, err := ioutil.ReadFile(paramsFile)
+			if err != nil {
+				return params, exitErrorf(1, "yamlFile.Get err   #%v ", err)
+			}
+			err = yaml.Unmarshal(yamlFile, &params)
+			if err != nil {
+				return params, exitErrorf(1, "Unmarshal: %v", err)
+			}
+		} else {
+			params.FileToAdd = fileToAdd
+			params.InnerPath = innerPath
+			params.ZipPath = zipPath
+		}
+	} else {
+		params.FileToAdd = fileToAdd
+		params.InnerPath = innerPath
+		params.ZipPath = zipPath
 	}
-
-	tmp, err := extractToTmp(zipPath)
-	// clean up
-	defer os.RemoveAll(tmp)
-	if err != nil {
-		fmt.Errorf("error processing %s: %s", zipPath, err.Error())
-		os.Exit(1)
-	}
-
-	err = addFileToTmp(tmp, fileToAdd, innerPath)
-	if err != nil {
-		fmt.Errorf("error processing %s: %s", fileToAdd, err.Error())
-		os.Exit(1)
-	}
-
-	err = zipTmp(tmp, zipPath)
-	if err != nil {
-		fmt.Errorf("error zipping %s to %s: %s", tmp, zipPath, err.Error())
-		os.Exit(1)
-	}
-
-	os.Exit(0)
+	return params, nil
 }
 
 func runApp(args []string) {
@@ -109,11 +152,15 @@ func runApp(args []string) {
 		cli.StringFlag{Name: "params, p", Value: "", Usage: "the file containing parameters in Yaml format"},
 	}
 
+	//app.Before = altsrc.InitInputSourceWithContext(flags, altsrc.NewYamlSourceFromFlagFunc("params, p"))
 	app.Action = mainAction
 	app.Run(args)
 }
 
 func extractToTmp(zipPath string) (string, error) {
+	if !files.IsRegular(zipPath) {
+		return "", fmt.Errorf(`Invalid zip file "%s"`, zipPath)
+	}
 	dir, err := ioutil.TempDir("", "zipw_")
 	if err != nil {
 		return "", err
@@ -121,7 +168,6 @@ func extractToTmp(zipPath string) (string, error) {
 	err = zipext.Extract(zipPath, dir)
 	if err != nil {
 		return "", err
-			fmt.Errorf("error in Extract(%s,%s): %s %s", zipPath, dir, err, err.Error())
 	}
 	return dir, nil
 }
@@ -135,7 +181,7 @@ func addFileToTmp(dir string, fileToAdd string, innerPath string) error {
 	if err != nil {
 		return err
 	}
-	os.MkdirAll(innerDir, 0755);
+	os.MkdirAll(innerDir, 0755)
 	err = files.Copy(fileToAdd, innerAbsolutePath)
 	if err != nil {
 		return err
@@ -145,8 +191,8 @@ func addFileToTmp(dir string, fileToAdd string, innerPath string) error {
 
 func zipTmp(dir string, zipPath string) error {
 	err := zipext.CreateFlat(dir, zipPath)
-  if err != nil {
-      return err
-  }
+	if err != nil {
+		return err
+	}
 	return nil
 }

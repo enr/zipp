@@ -6,11 +6,11 @@ import (
 	"os"
 	"strings"
 
-	"github.com/codegangsta/cli"
 	"github.com/enr/go-files/files"
 	"github.com/enr/go-zipext/zipext"
 	"github.com/mattn/go-colorable"
 	"github.com/mitchellh/colorstring"
+	"github.com/urfave/cli"
 )
 
 const (
@@ -35,20 +35,18 @@ func main() {
 	runApp(os.Args)
 }
 
-func mainAction(c *cli.Context) {
+func mainAction(c *cli.Context) error {
 	if len(c.Args()) < 1 {
-		fmt.Fprintf(stderr, missingParamInputPath)
 		cli.ShowAppHelp(c)
-		os.Exit(3)
+		return cli.NewExitError(missingParamInputPath, 3)
 	}
 	grepColor = c.String("grep")
 
 	fileName := c.Args()[0]
 
 	if !files.Exists(fileName) {
-		fmt.Fprintf(stderr, "Invalid file: %s\n", fileName)
 		cli.ShowAppHelp(c)
-		os.Exit(3)
+		return cli.NewExitError(fmt.Sprintf("Invalid file: %s", fileName), 2)
 	}
 
 	err := zipext.Walk(fileName, func(f *zip.File, err error) error {
@@ -64,8 +62,9 @@ func mainAction(c *cli.Context) {
 	})
 
 	if err != nil {
-		os.Exit(1)
+		return cli.NewExitError(fmt.Sprintf("error processing %s: %s", fileName, err.Error()), 1)
 	}
+	return nil
 }
 
 func runApp(args []string) {

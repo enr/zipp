@@ -10,11 +10,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/codegangsta/cli"
 	"github.com/enr/clui"
 	"github.com/enr/go-files/files"
 	"github.com/enr/go-zipext/zipext"
 	"github.com/mattn/go-colorable"
+	"github.com/urfave/cli"
 )
 
 const missingParamInputPath string = "Oops... I was expecting at least 1 argument: the path to zip."

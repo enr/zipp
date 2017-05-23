@@ -7,7 +7,6 @@ while [ -h "$TOOL_SOURCE" ] ; do TOOL_SOURCE="$(readlink "$TOOL_SOURCE")"; done
 HACK_DIR="$( cd -P "$( dirname "$TOOL_SOURCE" )" && pwd )"
 PRJ_HOME="$( cd -P "$( dirname "$HACK_DIR" )" && pwd )"
 
-
 source "${HACK_DIR}/config"
 app_name="$GH_REPO"
 
@@ -17,7 +16,15 @@ SRC_DIR="${PRJ_HOME}/src"
 [[ -d "${PRJ_HOME}/pkg" ]] && rm -r "${PRJ_HOME}/pkg"
 
 hash gb 2>/dev/null || {
-    go get -u github.com/constabulary/gb/...
+  go get -u github.com/constabulary/gb/...
+}
+
+hash golint 2>/dev/null || {
+  go get -u github.com/golang/lint/golint
+}
+
+hash goimports 2>/dev/null || {
+  go get golang.org/x/tools/cmd/goimports
 }
 
 export GOPATH="${PRJ_HOME}:${PRJ_HOME}/vendor"
@@ -25,28 +32,23 @@ export GOPATH="${PRJ_HOME}:${PRJ_HOME}/vendor"
 cd "${PRJ_HOME}"
 
 for dir in $(find "$SRC_DIR" -mindepth 1 -maxdepth 1 -type d); do
-	app_name=$(basename "$dir")
-    echo " =====     Process ${app_name} ${dir}     ====="
-    cd "$dir"
-	golint
-	go fmt ./...
-	go vet ./...
-	goimports -w .
+  app_name=$(basename "$dir")
+  echo "===== Process ${app_name} [${dir}]"
+  cd "$dir"
+  echo "----- golint"
+  golint
+  echo "----- go fmt"
+  go fmt ./...
+  echo "----- go vet"
+  go vet ./...
+  echo "----- goimports"
+  goimports -w .
   # - diff <(goimports -d .) <(printf "")
   # - diff <(golint ./...) <(printf "")
-    cd "$PRJ_HOME"
-    gb build "$app_name"
-    # echo "${d} go test -cpu=1,2,4 -race ./..."
-	# go test -cpu=1,2,4 -race ./...
-    cd "$dir"
-    echo "${dir} go test -cover ./..."
-	go test -cover ./...
-    # echo "${d} go test show output"
-	# go test -cover -v ./... -showoutput
+  cd "$PRJ_HOME"
+  echo "----- gb build"
+  gb build "$app_name"
+  cd "$dir"
+  echo "----- go test -cover ./..."
+  go test -cover ./...
 done
-
-# for dir in $(find "$SRC_DIR" -mindepth 1 -maxdepth 1 -type d); do
-# 	echo " - Process $dir"
-# 	bname=$(basename "$dir")
-# 	echo $bname
-# done
