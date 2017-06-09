@@ -20,7 +20,7 @@ git_dirty=$(git status --porcelain)
     exit 1
 }
 
-# https://github.com/tcnksm/ghr/releases/download/v0.4.0/ghr_v0.4.0_linux_amd64.zip
+# https://github.com/tcnksm/ghr/releases/download/v0.5.4/ghr_v0.5.4_linux_amd64.zip
 command -v ghr >/dev/null || {
     echo "ghr not found"
     exit 1
