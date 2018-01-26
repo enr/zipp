@@ -11,6 +11,8 @@ import (
 	"github.com/mattn/go-colorable"
 	"github.com/mitchellh/colorstring"
 	"github.com/urfave/cli"
+
+	"github.com/enr/zipp/lib/core"
 )
 
 const (
@@ -28,7 +30,7 @@ Build date: %s
 	stdout     = colorable.NewColorableStdout()
 	stderr     = colorable.NewColorableStderr()
 	grepColor  = ""
-	appVersion = fmt.Sprintf(versionTemplate, version, gitCommit, buildTime)
+	appVersion = fmt.Sprintf(versionTemplate, core.Version, core.GitCommit, core.BuildTime)
 )
 
 func main() {

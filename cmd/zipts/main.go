@@ -15,6 +15,8 @@ import (
 	"github.com/enr/go-zipext/zipext"
 	"github.com/mattn/go-colorable"
 	"github.com/urfave/cli"
+
+	"github.com/enr/zipp/lib/core"
 )
 
 const missingParamInputPath string = "Oops... I was expecting at least 1 argument: the path to zip."
@@ -25,7 +27,7 @@ var (
 Revision: %s
 Build date: %s
 `
-	appVersion = fmt.Sprintf(versionTemplate, version, gitCommit, buildTime)
+	appVersion = fmt.Sprintf(versionTemplate, core.Version, core.GitCommit, core.BuildTime)
 )
 
 func getUI(level clui.VerbosityLevel) *clui.Clui {

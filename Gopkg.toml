@@ -24,18 +24,9 @@
 #   go-tests = true
 #   unused-packages = true
 
-
-[[constraint]]
-  name = "github.com/BurntSushi/toml"
-  version = "0.3.0"
-
 [[constraint]]
   branch = "master"
   name = "github.com/enr/clui"
-
-[[constraint]]
-  branch = "master"
-  name = "github.com/enr/go-commons"
 
 [[constraint]]
   branch = "master"
@@ -51,46 +42,7 @@
 
 [[constraint]]
   branch = "master"
-  name = "github.com/extemporalgenome/slug"
-
-[[constraint]]
-  name = "github.com/mattn/go-isatty"
-  version = "0.0.2"
-
-[[constraint]]
-  branch = "master"
   name = "github.com/mitchellh/colorstring"
-
-[[constraint]]
-  name = "github.com/stretchr/testify"
-  version = "1.2.0"
-
-[[constraint]]
-  name = "github.com/subosito/gotenv"
-  version = "1.1.0"
-
-[[constraint]]
-  branch = "master"
-  name = "golang.org/x/sys"
-  source = "github.com/golang/sys"
-
-[[constraint]]
-  branch = "master"
-  name = "golang.org/x/text"
-  source = "github.com/golang/text"
-
-[[constraint]]
-  branch = "master"
-  name = "golang.org/x/tools"
-  source = "github.com/golang/tools"
-
-[[constraint]]
-  branch = "v1"
-  name = "gopkg.in/check.v1"
-
-[[constraint]]
-  name = "gopkg.in/urfave/cli.v1"
-  version = "1.20.0"
 
 [[constraint]]
   branch = "v2"

@@ -1,10 +1,10 @@
-package main
+package core
 
 // version of the running app.
-var version = ""
+var Version = ""
 
 // buildTime of the running app.
-var buildTime = ""
+var BuildTime = ""
 
 // gitCommit is the Git hash and a "+CHANGES" suffix if there are uncommitted changes.
-var gitCommit = ""
+var GitCommit = ""

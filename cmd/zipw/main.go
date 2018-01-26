@@ -14,6 +14,8 @@ import (
 	"github.com/mattn/go-colorable"
 	"github.com/urfave/cli"
 	"gopkg.in/yaml.v2"
+
+	"github.com/enr/zipp/lib/core"
 )
 
 const (
@@ -26,7 +28,7 @@ var (
 Revision: %s
 Build date: %s
 `
-	appVersion = fmt.Sprintf(versionTemplate, version, gitCommit, buildTime)
+	appVersion = fmt.Sprintf(versionTemplate, core.Version, core.GitCommit, core.BuildTime)
 )
 
 func getUI(level clui.VerbosityLevel) *clui.Clui {

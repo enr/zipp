@@ -25,13 +25,15 @@ echo "version : ${APP_VERSION}"
 echo "git : ${git_commit}"
 echo "build time : ${buildtime}"
 
+dep ensure
+
 for dir in $(find "$CMDS_DIR" -mindepth 1 -maxdepth 1 -type d); do
     app_name=$(basename "$dir")
     echo " =====     Process ${app_name} ${dir}     ====="
     go build -ldflags "-s \
-    -X main.version=${APP_VERSION} \
-    -X main.buildTime=${buildtime} \
-    -X main.gitCommit=${git_commit}" \
+    -X core.Version=${APP_VERSION} \
+    -X core.BuildTime=${buildtime} \
+    -X core.GitCommit=${git_commit}" \
     -o "${BIN_DIR}/${app_name}" \
     "github.com/${GH_OWNER}/${GH_REPO}/cmd/${app_name}"
 done
