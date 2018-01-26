@@ -9,6 +9,9 @@ PRJ_HOME="$( cd -P "$( dirname "$HACK_DIR" )" && pwd )"
 
 cd "$PRJ_HOME"
 
-go get -u github.com/constabulary/gb/...
+command -v dep >/dev/null || {
+    echo "dep not found"
+    exit 1
+}
 
-gb vendor update -all
+dep ensure -update
