@@ -42,9 +42,6 @@ func mainAction(c *cli.Context) error {
 	}
 	grepColor = c.String("grep")
 
-	a := utils.Reverse("ciao")
-	println(a)
-
 	fileName := c.Args()[0]
 
 	if !files.Exists(fileName) {
