@@ -47,7 +47,7 @@ func main() {
 	runApp(os.Args)
 }
 
-type Params struct {
+type commandParams struct {
 	FileToAdd string `yaml:"file"`
 	InnerPath string `yaml:"inner"`
 	ZipPath   string `yaml:"zip"`
@@ -102,8 +102,8 @@ func exitErrorf(exitCode int, template string, args ...interface{}) error {
 	return cli.NewExitError(fmt.Sprintf(template, args...), exitCode)
 }
 
-func loadParams(c *cli.Context) (Params, error) {
-	params := Params{}
+func loadParams(c *cli.Context) (commandParams, error) {
+	params := commandParams{}
 
 	fileToAdd := c.String("file")
 	innerPath := c.String("inner")

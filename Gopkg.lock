@@ -17,7 +17,7 @@
   branch = "master"
   name = "github.com/enr/go-zipext"
   packages = ["zipext"]
-  revision = "22db20b398b6c22c2011ec150fbcb75531c433f1"
+  revision = "bfd3bf9982c2a3679336e48775b45f526fad3c53"
 
 [[projects]]
   branch = "master"
@@ -65,7 +65,7 @@
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "03467258950d845cd1877eab69461b98e8c09219"
+  revision = "ff2a66f350cefa5c93a634eadb5d25bb60c85a9c"
 
 [[projects]]
   branch = "master"

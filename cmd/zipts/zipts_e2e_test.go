@@ -45,6 +45,16 @@ var executions = []commandExecution{
 	},
 	{
 		command: &runcmd.Command{
+			Exe:        exePath("zipts"),
+			Args:       []string{"../testdata"},
+			WorkingDir: "../../bin",
+		},
+		success:  true,
+		exitCode: 0,
+		stdout:   "Completed",
+	},
+	{
+		command: &runcmd.Command{
 			Exe:  exePath("zipts"),
 			Args: []string{"--version"},
 		},

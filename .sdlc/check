@@ -31,15 +31,14 @@ for dir in $(find "$CMDS_DIR" -mindepth 1 -maxdepth 1 -type d); do
   echo "===== Process ${app_name} [${dir}]"
   cd "$dir"
   echo "----- golint"
-  golint
+  diff <(golint ./...) <(printf "")
   echo "----- go fmt"
   go fmt ./...
   echo "----- go vet"
   go vet ./...
   echo "----- goimports"
   goimports -w .
-  # - diff <(goimports -d .) <(printf "")
-  # - diff <(golint ./...) <(printf "")
+  diff <(goimports -d .) <(printf "")
   cd "$PRJ_HOME"
   echo "----- go build"
   # we need binaries for some e2e test
