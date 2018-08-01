@@ -28,12 +28,12 @@ echo "build time : ${buildtime}"
 dep ensure
 
 for dir in $(find "$CMDS_DIR" -mindepth 1 -maxdepth 1 -type d); do
-    app_name=$(basename "$dir")
-    echo " =====     Process ${app_name} ${dir}     ====="
-    go build -ldflags "-s \
-    -X github.com/${GH_OWNER}/${GH_REPO}/lib/core.Version=${APP_VERSION} \
-    -X github.com/${GH_OWNER}/${GH_REPO}/lib/core.BuildTime=${buildtime} \
-    -X github.com/${GH_OWNER}/${GH_REPO}/lib/core.GitCommit=${git_commit}" \
-    -o "${BIN_DIR}/${app_name}" \
-    "github.com/${GH_OWNER}/${GH_REPO}/cmd/${app_name}"
+  app_name=$(basename "$dir")
+  echo " =====     Process ${app_name} ${dir}     ====="
+  go build -ldflags "-s \
+  -X github.com/${GH_OWNER}/${GH_REPO}/lib/core.Version=${APP_VERSION} \
+  -X github.com/${GH_OWNER}/${GH_REPO}/lib/core.BuildTime=${buildtime} \
+  -X github.com/${GH_OWNER}/${GH_REPO}/lib/core.GitCommit=${git_commit}" \
+  -o "${BIN_DIR}/${app_name}" \
+  "github.com/${GH_OWNER}/${GH_REPO}/cmd/${app_name}"
 done

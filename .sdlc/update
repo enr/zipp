@@ -10,8 +10,8 @@ PRJ_HOME="$( cd -P "$( dirname "$HACK_DIR" )" && pwd )"
 cd "$PRJ_HOME"
 
 command -v dep >/dev/null || {
-    echo "dep not found"
-    exit 1
+  echo "dep not found"
+  exit 1
 }
 
 dep ensure -update

@@ -2,4 +2,4 @@ GH_OWNER='enr'
 GH_REPO='zipp'
 DIST_DIR='dist'
 
-APP_VERSION='0.5.0'
+APP_VERSION='0.5.1'
