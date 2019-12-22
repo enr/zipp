@@ -1,5 +1,8 @@
-GH_OWNER='enr'
-GH_REPO='zipp'
+REPO_HOST='github.com'
+REPO_OWNER='enr'
+REPO_NAME='zipp'
 DIST_DIR='dist'
+GOPROXY='off'
 
-APP_VERSION='0.5.1'
+APP_VERSION='0.5.1' # APP_VERSION_AUTOLINE this line is automatically managed
+

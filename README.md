@@ -6,7 +6,7 @@ Zip utilities:
 - `zipts`: creates a zip file with a timestamp suffix in the name
 - `zipw`: add file to existing zip
 
-![screenshot](Screenshot.jpe "Zipp screenshot")
+![screenshot](Screenshot.jpg "Zipp screenshot")
 
 ## Install
 
