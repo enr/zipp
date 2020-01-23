@@ -60,7 +60,8 @@ var executions = []commandExecution{
 		},
 		success:  true,
 		exitCode: 0,
-		stdout:   fmt.Sprintf("zipts version %s", appVersion),
+		stdout:   "zipts version",
+		//   fmt.Sprintf("zipts version %s", appVersion),
 	},
 }
 
