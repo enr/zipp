@@ -11,6 +11,7 @@ cd ..
 set project_dir=%cd%
 
 set module_name=%REPO_HOST%/%REPO_OWNER%/%REPO_NAME%
+set bin_dir=%project_dir%\bin
 
 echo script_name   %script_name%
 echo script_path   %script_path%
@@ -31,12 +32,12 @@ cd %project_dir%
 REM IF EXIST %exe_path% DEL /F %exe_path%
 
 @echo ON
+SETLOCAL ENABLEDELAYEDEXPANSION
 for /f %%x in ('dir /AD /B /S cmd') do (
     echo --- go test cmd %%x
     cd %%x
-    set bin_path=%%~nx
-    set exe_path=%bin_path%.exe
+    set bin_name=%%~nx
     call go build -mod vendor -ldflags "-s -X %module_name%/lib/core.Version=%APP_VERSION% -X %module_name%/lib/core.BuildTime=%TIMESTAMP% -X %module_name%/lib/core.GitCommit=win-dev-commit" ^
-    -o %exe_path% ./...
+    -o %bin_dir%\%bin_name%.exe ./...
     go test -mod vendor -cover ./...
 )
