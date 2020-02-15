@@ -18,10 +18,6 @@ import (
 	"github.com/enr/zipp/lib/core"
 )
 
-const (
-	missingParamInputPath = "Oops... I was expecting at least 1 argument: the path to zip."
-)
-
 var (
 	ui              *clui.Clui
 	versionTemplate = `%s
@@ -74,7 +70,7 @@ func mainAction(c *cli.Context) error {
 	ui.Confidentialf("file=%s inner=%s zip=%s", params.FileToAdd, params.InnerPath, params.ZipPath)
 
 	if !files.Exists(params.FileToAdd) {
-		return exitErrorf(1, `Invalid path "%s". Exit`, params.FileToAdd)
+		return exitErrorf(1, `Invalid path for the file to add: "%s". Exit`, params.FileToAdd)
 	}
 
 	tmp, err := extractToTmp(params.ZipPath)
@@ -153,7 +149,6 @@ func runApp(args []string) {
 		cli.StringFlag{Name: "params, p", Value: "", Usage: "the file containing parameters in Yaml format"},
 	}
 
-	//app.Before = altsrc.InitInputSourceWithContext(flags, altsrc.NewYamlSourceFromFlagFunc("params, p"))
 	app.Action = mainAction
 	app.Run(args)
 }
