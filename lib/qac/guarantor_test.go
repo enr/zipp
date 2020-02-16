@@ -34,7 +34,7 @@ func TestSpecificationError(t *testing.T) {
 	/*
 	 *  A Spec with wrong values.
 	 */
-	var spec = Spec{
+	spec := Spec{
 		Command: Command{
 			Exe:  "test",
 			Args: []string{},
@@ -56,9 +56,9 @@ func TestSpecificationError(t *testing.T) {
 	}
 
 	res := sut.Verify(spec)
-	for i, err := range res.Errors() {
-		fmt.Printf("%d e %v\n", i, err)
-	}
+	// for i, err := range res.Errors() {
+	// 	fmt.Printf("%d e %v\n", i, err)
+	// }
 	if !atLeastOneErrorContaining(res.Errors(), "qwerty") {
 		t.Errorf("Expected at least one error containing <%s>", "qwerty")
 	}

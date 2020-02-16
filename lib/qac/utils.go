@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 )
 
 // FullExePathOrFail returns the absolute and normalized path to the exe with conventional extensione (ie ".exe" for Windows, "" for other systems) and calls log.Fatal if it returns a non-nil error.
@@ -25,7 +26,7 @@ func FullExePath(p string) (string, error) {
 	abs, _ := filepath.Abs(p)
 	fp := filepath.FromSlash(filepath.Clean(abs))
 	var ext string
-	if runtime.GOOS == "windows" {
+	if runtime.GOOS == "windows" && isMissingExt(fp) {
 		ext = ".exe"
 	}
 	executablePath := fmt.Sprintf("%s%s", fp, ext)
@@ -33,4 +34,8 @@ func FullExePath(p string) (string, error) {
 		return "", fmt.Errorf("no such executable: %s", executablePath)
 	}
 	return executablePath, nil
+}
+
+func isMissingExt(p string) bool {
+	return !strings.HasSuffix(p, ".exe") && !strings.HasSuffix(p, ".bat") && !strings.HasSuffix(p, ".cmd")
 }
