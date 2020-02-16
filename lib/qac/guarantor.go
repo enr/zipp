@@ -27,7 +27,6 @@ type Guarantor struct {
 
 // Verify the given specification.
 func (g *Guarantor) Verify(spec Spec) *SpecExecutionResult {
-	fmt.Printf(" > SPEC %v\n", spec)
 	command := spec.Command
 	ser := &SpecExecutionResult{}
 	res := g.executor.execute(command)
@@ -61,9 +60,9 @@ func verifyOutputExpectation(expectation OutputExpectation, ser *SpecExecutionRe
 			return
 		}
 		// Convert []byte to string and print to screen
-		t := string(content)
+		t := strings.TrimSpace(string(content))
 		if out != t {
-			ser.addError(fmt.Errorf("%s: actual output\n%s\ndoes not contain:\n%s", desc, out, t))
+			ser.addError(fmt.Errorf("%s: actual output\n_%s_\ndoes not contain:\n_%s_", desc, out, t))
 		}
 	}
 	if len(expectation.Tokens) > 0 {

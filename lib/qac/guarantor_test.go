@@ -22,7 +22,7 @@ func (e *fixedValueExecutor) execute(c Command) executionResult {
 	}
 }
 
-func Test1(t *testing.T) {
+func TestSpecificationError(t *testing.T) {
 	e := &fixedValueExecutor{
 		success:  true,
 		exitCode: 0,
@@ -31,8 +31,10 @@ func Test1(t *testing.T) {
 	}
 	sut := newGuarantor(e)
 
+	/*
+	 *  A Spec with wrong values.
+	 */
 	var spec = Spec{
-
 		Command: Command{
 			Exe:  "test",
 			Args: []string{},
@@ -70,7 +72,53 @@ func Test1(t *testing.T) {
 		t.Errorf("Expected at least one error containing <%s>", "actual output")
 	}
 	if len(res.Errors()) != 3 {
-		t.Errorf(`errs num %d`, res.Errors())
+		t.Errorf(`Expected 3 errors, got %d`, len(res.Errors()))
+	}
+}
+
+func TestSpecificationOk(t *testing.T) {
+	e := &fixedValueExecutor{
+		success:  true,
+		exitCode: 0,
+		stdout:   "stdout",
+		stderr:   "stderr",
+	}
+	sut := newGuarantor(e)
+
+	/*
+	 *  A Spec with wrong values.
+	 */
+	var spec = Spec{
+		Command: Command{
+			Exe:  "test",
+			Args: []string{},
+		},
+		Expectation: Expectation{
+			Status: StatusExpectation{
+				Success: true,
+				Code:    0,
+			},
+			Output: OutputExpectations{
+				Stdout: OutputExpectation{
+					File:       "testdata/stdout.txt",
+					Comparison: Exact,
+				},
+				Stderr: OutputExpectation{
+					Tokens: []string{
+						"stderr",
+					},
+					Comparison: Exact,
+				},
+			},
+		},
+	}
+
+	res := sut.Verify(spec)
+	if len(res.Errors()) != 0 {
+		for i, err := range res.Errors() {
+			fmt.Printf("%d e %v\n", i, err)
+		}
+		t.Errorf(`Expected 0 errors, got %d`, len(res.Errors()))
 	}
 }
 
