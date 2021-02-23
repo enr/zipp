@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/enr/go-files/files"
-	"github.com/enr/go-zipext/zipext"
+	"github.com/enr/zipext"
 	"github.com/mattn/go-colorable"
 	"github.com/mitchellh/colorstring"
 	"github.com/urfave/cli"

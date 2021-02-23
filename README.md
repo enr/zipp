@@ -21,3 +21,10 @@ unzip zipp-0.4.1_linux_amd64.zip
 # move to a directory in $PATH
 mv zipp-0.4.1_linux_amd64/* ~/bin/
 ```
+
+
+## License
+
+Apache 2.0 - see LICENSE file.
+
+Copyright 2014-TODAY zipp contributors

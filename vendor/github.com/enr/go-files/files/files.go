@@ -5,6 +5,7 @@ import (
 	"crypto/sha1"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
@@ -47,7 +48,8 @@ func Copy(source, destination string) error {
 
 func existsWithError(filepath string) (bool, error) {
 	name := cleanPath(filepath)
-	if _, err := os.Stat(name); err != nil {
+	s, err := os.Stat(name)
+	if err != nil {
 		if os.IsNotExist(err) {
 			return false, err
 		}
@@ -61,7 +63,7 @@ func existsWithError(filepath string) (bool, error) {
 				}
 			}
 		}
-		return true, err
+		return s != nil, err
 	}
 	return true, nil
 }
@@ -70,12 +72,6 @@ func existsWithError(filepath string) (bool, error) {
 func Exists(filepath string) bool {
 	exist, _ := existsWithError(filepath)
 	return exist
-}
-
-// IsAccessible reports if file exists and user has permission to use it
-func IsAccessible(filepath string) bool {
-	exist, err := existsWithError(filepath)
-	return exist && !os.IsPermission(err)
 }
 
 // IsDir reports whether d is a directory.
@@ -104,9 +100,8 @@ func Sha1Sum(fpath string) (string, error) {
 		return "", err
 	}
 	defer f.Close()
-	reader := bufio.NewReader(f)
 	sha1 := sha1.New()
-	_, err = io.Copy(sha1, reader)
+	_, err = io.Copy(sha1, f)
 	if err != nil {
 		return "", err
 	}
@@ -183,6 +178,7 @@ func EachLine(path string, walkFn EachLineFunc) error {
 	return err
 }
 
+// IsSamePath returns true if two different strings refer to the same file.
 func IsSamePath(p1 string, p2 string) bool {
 	first, err := normalizedPath(p1)
 	if err != nil {
@@ -206,4 +202,36 @@ func normalizedPath(p string) (string, error) {
 		return "", err
 	}
 	return np, nil
+}
+
+// CopyDir copies a whole directory recursively overwriting contents
+func CopyDir(src string, dst string) error {
+	var err error
+	var fds []os.FileInfo
+	var info os.FileInfo
+	if info, err = os.Stat(src); err != nil {
+		return err
+	}
+	if err = os.MkdirAll(dst, info.Mode()); err != nil {
+		return err
+	}
+
+	if fds, err = ioutil.ReadDir(src); err != nil {
+		return err
+	}
+	for _, fd := range fds {
+		sourcePath := path.Join(src, fd.Name())
+		destinationPath := path.Join(dst, fd.Name())
+
+		if fd.IsDir() {
+			if err = CopyDir(sourcePath, destinationPath); err != nil {
+				break
+			}
+		} else {
+			if err = Copy(sourcePath, destinationPath); err != nil {
+				break
+			}
+		}
+	}
+	return err
 }

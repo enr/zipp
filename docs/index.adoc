@@ -1,7 +1,7 @@
 = Zipp
 :author: {project-authors}
 :revnumber: {project-version}
-:source-highlighter: rouge
+:stylesheet: style.css
 
 <<<
 
@@ -12,7 +12,7 @@ image::https://github.com/{ci-ns}/workflows/CI%20Linux%20Mac/badge.svg[CI Linux 
 image::https://github.com/{ci-ns}/workflows/CI%20Windows/badge.svg[CI Windows]
 
 https://github.com/{ci-ns}/releases/latest[Download last artifacts] |
- https://{repo-owner}.github.io/{repo-name}/pdf/{repo-name}_manual.pdf[Pdf manual] |
+ https://{repo-owner}.github.io/{repo-name}/pdf/{repo-name}_manual.pdf[This manual as PDF] |
  Build revision `{ci-build-id}`
 endif::[]
 
@@ -29,4 +29,5 @@ Zip utilities:
 
 ## License
 
-Copyright (C) 2020 {project-authors}.
+http://www.apache.org/licenses/LICENSE-2.0[Apache License 2.0] - Copyright (C) 2016-TODAY {project-authors}.
+

@@ -3,17 +3,17 @@
 set -e
 
 TOOL_SOURCE="${BASH_SOURCE[0]}"
-while [ -h "$TOOL_SOURCE" ] ; do TOOL_SOURCE="$(readlink "$TOOL_SOURCE")"; done
-SDLC_DIR="$( cd -P "$( dirname "$TOOL_SOURCE" )" && pwd )"
-PRJ_HOME="$( cd -P "$( dirname "$SDLC_DIR" )" && pwd )"
+while [ -h "$TOOL_SOURCE" ]; do TOOL_SOURCE="$(readlink "$TOOL_SOURCE")"; done
+SDLC_DIR="$(cd -P "$(dirname "$TOOL_SOURCE")" && pwd)"
+PRJ_HOME="$(cd -P "$(dirname "$SDLC_DIR")" && pwd)"
 
 git_hash="$(git rev-parse HEAD)"
 git_message=$(git log --format=%B -n 1 "${git_hash}")
 echo "git message ${git_message}"
-[[ "$git_message" == '[skip ci]'* ]] && {
-  echo "skip ci"
-  exit 0
-}
+# [[ "$git_message" == '[skip ci]'* ]] && {
+#   echo "skip ci"
+#   exit 0
+# }
 
 source "${SDLC_DIR}/config"
 app_name="${REPO_NAME}"
@@ -41,6 +41,9 @@ echo "Environment PATH=${PATH}"
   export PATH="${GOPATH}/bin:${PATH}"
 }
 
+# cd to a temporary directory to avoid changes to go.mod
+cd $(mktemp -d)
+
 hash golint 2>/dev/null || {
   go get -u golang.org/x/lint/golint
 }
@@ -50,7 +53,12 @@ hash goimports 2>/dev/null || {
 }
 
 hash gocyclo 2>/dev/null || {
-  go get -u github.com/fzipp/gocyclo
+  go get -u github.com/fzipp/gocyclo/cmd/gocyclo
+}
+
+[[ -n "$SDLC_GO_VENDOR" ]] && {
+  echo 'Detected Go vendor mode: set GOPROXY=off'
+  export GOPROXY='off'
 }
 
 cd "${PRJ_HOME}"
@@ -62,16 +70,14 @@ for dir in $(find "$LIB_DIR" -mindepth 1 -maxdepth 1 -type d); do
   echo "--- golint"
   diff <(golint ./...) <(printf "")
   echo "--- go fmt"
-  go fmt ./...
+  go fmt -mod vendor ./...
   echo "--- go vet"
-  go vet ./...
+  go vet -mod vendor ./...
   echo "--- goimports"
   goimports -w .
   diff <(goimports -d .) <(printf "")
   echo "--- gocyclo"
   diff <(gocyclo -over 10 .) <(printf "")
-  # cd "$PRJ_HOME"
-  # echo "--- go build"
   cd "$dir"
   echo "--- go test -cover ./..."
   go test -mod vendor -cover ./...
@@ -84,9 +90,9 @@ for dir in $(find "$CMDS_DIR" -mindepth 1 -maxdepth 1 -type d); do
   echo "--- golint"
   diff <(golint ./...) <(printf "")
   echo "--- go fmt"
-  go fmt ./...
+  go fmt -mod vendor ./...
   echo "--- go vet"
-  go vet ./...
+  go vet -mod vendor ./...
   echo "--- goimports"
   goimports -w .
   diff <(goimports -d .) <(printf "")

@@ -12,7 +12,7 @@ import (
 
 	"github.com/enr/clui"
 	"github.com/enr/go-files/files"
-	"github.com/enr/go-zipext/zipext"
+	"github.com/enr/zipext"
 	"github.com/mattn/go-colorable"
 	"github.com/urfave/cli"
 

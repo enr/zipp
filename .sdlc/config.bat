@@ -3,6 +3,7 @@ set REPO_OWNER=enr
 set REPO_NAME=zipp
 set TIMESTAMP=win-dev-timestamp
 
-set GOPROXY='off'
+set SDLC_GO_VENDOR=vendor
+set SDLC_GO_BASE=
 
 set APP_VERSION=win-dev
