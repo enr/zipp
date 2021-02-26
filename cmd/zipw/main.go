@@ -67,10 +67,6 @@ func mainAction(c *cli.Context) error {
 	}
 	ui = getUI(verbosityLevel)
 
-	// showHelp := func() {
-	// 	cli.ShowAppHelp(c)
-	// }
-
 	params, err := loadParams(c)
 	if err != nil {
 		return err
@@ -96,25 +92,21 @@ func mainAction(c *cli.Context) error {
 	steps := []step{}
 	tokens := []string{params.ZipPath}
 	tokens = append(tokens, strings.Split(params.InnerPath, `#`)...)
-	fmt.Printf("tokens %q \n", tokens)
 	for i, v := range tokens {
 		e := step{}
 		e.destDir = lastExpanded
 		if i == len(tokens)-1 {
-			fmt.Printf("->%s-> last token, break \n", v)
 			e.destination = lastPath
 			e.path = params.FileToAdd
 			e.innerPath = v
 			steps = append(steps, e)
 			break
 		} else if i == 0 {
-			fmt.Printf("->%s-> first token token \n", v)
 			e.path = params.ZipPath
 			e.destination = params.ZipPath
 			e.innerPath = filepath.Base(params.ZipPath)
 			e.destDir = filepath.Dir(params.ZipPath)
 		} else {
-			fmt.Printf("->%s-> middle token token \n", v)
 			e.destination = lastPath
 			e.path = filepath.Join(lastExpanded, v)
 			e.innerPath = v
@@ -122,7 +114,7 @@ func mainAction(c *cli.Context) error {
 		lastPath = e.path
 		lastExpanded, err = extractToTmp(e.path)
 		if err != nil {
-			ui.Errorf(`eXXX rror processing %s -> %s -> %s`, v, e.path, lastExpanded)
+			ui.Errorf(`error processing %s -> %s -> %s`, v, e.path, lastExpanded)
 			break
 		}
 		tmps = append(tmps, lastExpanded)
@@ -135,18 +127,15 @@ func mainAction(c *cli.Context) error {
 	}
 
 	var s step
-	// var fileToAdd string
-	// var innerPath string
 	l := len(steps)
 	first := true
 	for i := l - 1; i > 0; i-- {
 		s = steps[i]
-		fmt.Printf(" LOOP 2 -> %d %v \n", i, s)
 		if first {
 			fmt.Printf("# %d copy %s in dir %s as %s \n", i, s.path, s.destDir, s.innerPath)
 			err = addFileToTmp(s.path, s.destDir, s.innerPath)
 			if err != nil {
-				fmt.Printf("e r r o r %v \n", err)
+				fmt.Printf("error %v \n", err)
 				break
 			}
 			first = false
@@ -154,30 +143,13 @@ func mainAction(c *cli.Context) error {
 		fmt.Printf("# %d zip dir=%s into %s \n", i, s.destDir, s.destination)
 		err = zipTmp(s.destDir, s.destination)
 		if err != nil {
-			fmt.Printf("XXXXXXXe r r o r %v \n", err)
+			fmt.Printf("error %v \n", err)
 			break
 		}
 	}
 	if err != nil {
 		return exitErrorf(1, "error processing %s: %s", params.FileToAdd, err.Error())
 	}
-
-	// tmp, err := extractToTmp(params.ZipPath)
-	// // clean up
-	// defer os.RemoveAll(tmp)
-	// if err != nil {
-	// 	return exitErrorf(1, "error processing %s: %s", params.ZipPath, err.Error())
-	// }
-
-	// err = addFileToTmp(tmp, params.FileToAdd, params.InnerPath)
-	// if err != nil {
-	// 	return exitErrorf(1, "error processing %s: %s", params.FileToAdd, err.Error())
-	// }
-
-	// err = zipTmp(tmp, params.ZipPath)
-	// if err != nil {
-	// 	return exitErrorf(1, "error zipping %s to %s: %s", tmp, params.ZipPath, err.Error())
-	// }
 
 	return nil
 }
