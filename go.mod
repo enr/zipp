@@ -3,6 +3,7 @@ module github.com/enr/zipp
 go 1.13
 
 require (
+	github.com/cpuguy83/go-md2man v1.0.10 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
 	github.com/enr/clui v0.0.0-20201016165326-efdcff635536
 	github.com/enr/go-files v0.3.0
