@@ -71,7 +71,7 @@ func mainAction(c *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	ui.Confidentialf("file=%s inner=%s zip=%s", params.FileToAdd, params.InnerPath, params.ZipPath)
+	ui.Confidentialf("Adding file=%s to zip=%s in path inner=%s", params.FileToAdd, params.ZipPath, params.InnerPath)
 
 	if !files.Exists(params.FileToAdd) {
 		return exitErrorf(1, `Invalid path for the file to add: "%s". Exit`, params.FileToAdd)
@@ -81,7 +81,7 @@ func mainAction(c *cli.Context) error {
 	defer func() {
 		for _, t := range tmps {
 			if t != "" {
-				fmt.Printf("defer cleanup tmp %s \n", t)
+				ui.Confidentialf("Cleanup temporary dir: %s", t)
 				os.RemoveAll(t)
 			}
 		}
@@ -114,16 +114,16 @@ func mainAction(c *cli.Context) error {
 		lastPath = e.path
 		lastExpanded, err = extractToTmp(e.path)
 		if err != nil {
-			ui.Errorf(`error processing %s -> %s -> %s`, v, e.path, lastExpanded)
+			ui.Errorf(`%s error extracting %s`, v, e.path)
 			break
 		}
 		tmps = append(tmps, lastExpanded)
-		fmt.Printf(" -> %d extracted %s to %s\n", i, e.path, lastExpanded)
+		ui.Confidentialf("Extracted %s to %s", e.path, lastExpanded)
 		e.expanded = lastExpanded
 		steps = append(steps, e)
 	}
 	if err != nil {
-		return exitErrorf(1, "error processing %s: %s", params.ZipPath, err.Error())
+		return exitErrorf(1, "Error processing %s: %s", params.ZipPath, err.Error())
 	}
 
 	var s step
@@ -132,23 +132,22 @@ func mainAction(c *cli.Context) error {
 	for i := l - 1; i > 0; i-- {
 		s = steps[i]
 		if first {
-			fmt.Printf("# %d copy %s in dir %s as %s \n", i, s.path, s.destDir, s.innerPath)
+			ui.Confidentialf("Copy %s in dir %s as %s", s.path, s.destDir, s.innerPath)
 			err = addFileToTmp(s.path, s.destDir, s.innerPath)
 			if err != nil {
-				fmt.Printf("error %v \n", err)
+				ui.Errorf(`Error copying %s in dir %s as %s: %v`, s.path, s.destDir, s.innerPath, err)
 				break
 			}
 			first = false
 		}
-		fmt.Printf("# %d zip dir=%s into %s \n", i, s.destDir, s.destination)
 		err = zipTmp(s.destDir, s.destination)
 		if err != nil {
-			fmt.Printf("error %v \n", err)
+			ui.Errorf(`Error zipping %s to %s: %v`, s.destDir, s.destination, err)
 			break
 		}
 	}
 	if err != nil {
-		return exitErrorf(1, "error processing %s: %s", params.FileToAdd, err.Error())
+		return exitErrorf(1, "Error processing %s: %s", params.FileToAdd, err.Error())
 	}
 
 	return nil
@@ -167,7 +166,7 @@ func loadParams(c *cli.Context) (commandParams, error) {
 	zipPath := c.String("zip")
 	paramsFile := c.String("params")
 
-	ui.Confidentialf("file=%s inner=%s zip=%s params=%s", fileToAdd, innerPath, zipPath, paramsFile)
+	ui.Confidentialf("Adding file=%s to zip=%s in path inner=%s using file params=%s", fileToAdd, zipPath, innerPath, paramsFile)
 
 	if fileToAdd == "" && paramsFile == "" {
 		upe, _ := ui.QuestionWithDefault("Do you want to use a params file?", "yes")
@@ -176,7 +175,7 @@ func loadParams(c *cli.Context) (commandParams, error) {
 			paramsFile, _ = ui.QuestionWithDefault("Which params file?", "zipw.yml")
 			yamlFile, err := ioutil.ReadFile(paramsFile)
 			if err != nil {
-				return params, exitErrorf(1, "yamlFile.Get err   #%v ", err)
+				return params, exitErrorf(2, "Params file not found %s", paramsFile)
 			}
 			err = yaml.Unmarshal(yamlFile, &params)
 			if err != nil {

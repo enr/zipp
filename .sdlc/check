@@ -97,7 +97,7 @@ for dir in $(find "$CMDS_DIR" -mindepth 1 -maxdepth 1 -type d); do
   goimports -w .
   diff <(goimports -d .) <(printf "")
   echo "--- gocyclo"
-  diff <(gocyclo -over 16 .) <(printf "")
+  diff <(gocyclo -over 20 .) <(printf "")
   cd "${PRJ_HOME}"
   echo "--- go build"
   # we need binaries for some e2e test
@@ -106,3 +106,12 @@ for dir in $(find "$CMDS_DIR" -mindepth 1 -maxdepth 1 -type d); do
   echo "--- go test -cover ./..."
   go test -mod vendor -cover ./...
 done
+
+cd "${PRJ_HOME}"
+[[ -n "${SDLC_E2E_DIR}" ]] && {
+  e2e_dir="${PRJ_HOME}/${SDLC_E2E_DIR}"
+  [[ -d "$e2e_dir" ]] && {
+    echo "Running E2E tests in ${e2e_dir}"
+    go test -mod vendor "${REPO_HOST}/${REPO_OWNER}/${REPO_NAME}/${SDLC_E2E_DIR}"
+  }
+}

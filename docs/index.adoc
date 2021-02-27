@@ -26,6 +26,42 @@ Zip utilities:
 - `zipts`: creates a zip file with a timestamp suffix in the name
 - `zipw`: add file to existing zip
 
+**Zipls**
+
+List contents of a zip file.
+
+----
+$ zipls dist/zipp-0.7.0-dev_linux_amd64.zip 
+zipp-0.7.0-dev_linux_amd64/
+zipp-0.7.0-dev_linux_amd64/zipls
+zipp-0.7.0-dev_linux_amd64/zipw
+zipp-0.7.0-dev_linux_amd64/zipts
+----
+
+**Zipts**
+
+Create a zip file with timestamp suffix:
+
+----
+$ zipts testdata/
+Zipping  /home/enrico/Projects/zipp/testdata
+Completed /home/enrico/Projects/zipp/testdata-20210227173843.zip
+----
+
+**Zipw**
+
+Add file to zip.
+
+Add the file `README.md` to the zip `dist/zipp-0.7.0-dev_linux_amd64.zip` in the path `zipp-0.7.0-dev_linux_amd64/myreadme.md`:
+
+----
+$ zipw -f README.md -i 'zipp-0.7.0-dev_linux_amd64/myreadme.md' -z dist/zipp-0.7.0-dev_linux_amd64.zip 
+$ zipls dist/zipp-0.7.0-dev_linux_amd64.zip 
+zipp-0.7.0-dev_linux_amd64/myreadme.md
+zipp-0.7.0-dev_linux_amd64/zipls
+zipp-0.7.0-dev_linux_amd64/zipw
+zipp-0.7.0-dev_linux_amd64/zipts
+----
 
 ## License
 

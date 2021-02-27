@@ -4,9 +4,11 @@ github.com/cpuguy83/go-md2man/v2/md2man
 github.com/enr/clui
 # github.com/enr/go-files v0.3.0
 github.com/enr/go-files/files
+# github.com/enr/qac v0.2.0
+github.com/enr/qac
 # github.com/enr/runcmd v0.5.0
 github.com/enr/runcmd
-# github.com/enr/zipext v0.0.0-20210223182633-549ed4c8e1a7
+# github.com/enr/zipext v0.3.0
 github.com/enr/zipext
 # github.com/extemporalgenome/slug v0.0.0-20150414033109-0320c85e32e0
 github.com/extemporalgenome/slug
@@ -16,13 +18,15 @@ github.com/mattn/go-colorable
 github.com/mattn/go-isatty
 # github.com/mitchellh/colorstring v0.0.0-20190213212951-d06e56a500db
 github.com/mitchellh/colorstring
+# github.com/mitchellh/go-homedir v1.1.0
+github.com/mitchellh/go-homedir
 # github.com/russross/blackfriday/v2 v2.1.0
 github.com/russross/blackfriday/v2
 # github.com/subosito/gotenv v1.2.0
 github.com/subosito/gotenv
 # github.com/urfave/cli v1.22.5
 github.com/urfave/cli
-# golang.org/x/sys v0.0.0-20210223095934-7937bea0104d
+# golang.org/x/sys v0.0.0-20210227040730-b0d1d43c014d
 golang.org/x/sys/internal/unsafeheader
 golang.org/x/sys/unix
 # golang.org/x/text v0.3.5

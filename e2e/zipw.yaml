@@ -1,0 +1,60 @@
+preconditions:
+  fs:
+    - file: ../bin/zipw
+      ext:
+        windows: .exe
+specs:
+  help:
+    command:
+      working_dir: ..
+      exe: bin/zipw
+      ext:
+        windows: .exe
+      args:
+        - "--help"
+    expectations:
+      status:
+        equals_to: 0
+      output:
+        stdout:
+          contains_all:
+            - NAME
+            - USAGE
+            - COMMANDS
+            - OPTIONS
+        stderr:
+          is_empty: true
+  version:
+    command:
+      working_dir: ..
+      exe: bin/zipw
+      ext:
+        windows: .exe
+      args:
+        - "--version"
+    expectations:
+      status:
+        equals_to: 0
+      output:
+        stdout:
+          contains_all:
+            - zipw version
+            - Revision
+            - Build date
+        stderr:
+          is_empty: true
+  no-args:
+    command:
+      working_dir: ..
+      exe: bin/zipw
+      ext:
+        windows: .exe
+    expectations:
+      status:
+        equals_to: 2
+      output:
+        stdout:
+          contains: Do you want to use a params file
+        stderr:
+          contains_all:
+            - 'Params file not found'

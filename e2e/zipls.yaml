@@ -1,0 +1,60 @@
+preconditions:
+  fs:
+    - file: ../bin/zipls
+      ext:
+        windows: .exe
+specs:
+  help:
+    command:
+      working_dir: ..
+      exe: bin/zipls
+      ext:
+        windows: .exe
+      args:
+        - "--help"
+    expectations:
+      status:
+        equals_to: 0
+      output:
+        stdout:
+          contains_all:
+            - NAME
+            - USAGE
+            - COMMANDS
+            - OPTIONS
+        stderr:
+          is_empty: true
+  version:
+    command:
+      working_dir: ..
+      exe: bin/zipls
+      ext:
+        windows: .exe
+      args:
+        - "--version"
+    expectations:
+      status:
+        equals_to: 0
+      output:
+        stdout:
+          contains_all:
+            - zipls version
+            - Revision
+            - Build date
+        stderr:
+          is_empty: true
+  no-args:
+    command:
+      working_dir: ..
+      exe: bin/zipls
+      ext:
+        windows: .exe
+    expectations:
+      status:
+        equals_to: 3
+      output:
+        stdout:
+          contains: USAGE
+        stderr:
+          contains_all:
+            - 'I was expecting at least 1 argument: the path to zip.'

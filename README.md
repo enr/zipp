@@ -1,7 +1,10 @@
 # zipp
 
 ![CI Linux Mac](https://github.com/enr/zipp/workflows/CI%20Linux%20Mac/badge.svg)
-![CI Windows](https://github.com/enr/zipp/workflows/CI%20Windows/badge.svg) https://enr.github.io/zipp/
+![CI Windows](https://github.com/enr/zipp/workflows/CI%20Windows/badge.svg)
+[![Documentation](https://img.shields.io/badge/Website-Documentation-orange)](https://enr.github.io/zipp/)
+[![Download](https://img.shields.io/badge/Download-Last%20release-brightgreen)](https://github.com/enr/zipp/releases/latest)
+
 
 Zip utilities:
 
@@ -10,18 +13,6 @@ Zip utilities:
 - `zipw`: add file to existing zip
 
 ![screenshot](Screenshot.jpg "Zipp screenshot")
-
-## Install
-
-```
-# download from releases
-wget https://github.com/enr/zipp/releases/download/v0.4.1/zipp-0.4.1_linux_amd64.zip
-# extract
-unzip zipp-0.4.1_linux_amd64.zip
-# move to a directory in $PATH
-mv zipp-0.4.1_linux_amd64/* ~/bin/
-```
-
 
 ## License
 
