@@ -43,12 +43,6 @@ func main() {
 	runApp(os.Args)
 }
 
-type commandParams struct {
-	FileToAdd string `yaml:"file"`
-	InnerPath string `yaml:"inner"`
-	ZipPath   string `yaml:"zip"`
-}
-
 type step struct {
 	path        string
 	expanded    string
@@ -73,83 +67,89 @@ func mainAction(c *cli.Context) error {
 	}
 	ui.Confidentialf("Adding file=%s to zip=%s in path inner=%s", params.FileToAdd, params.ZipPath, params.InnerPath)
 
-	if !files.Exists(params.FileToAdd) {
-		return exitErrorf(1, `Invalid path for the file to add: "%s". Exit`, params.FileToAdd)
-	}
-
-	tmps := []string{}
-	defer func() {
-		for _, t := range tmps {
-			if t != "" {
-				ui.Confidentialf("Cleanup temporary dir: %s", t)
-				os.RemoveAll(t)
-			}
-		}
-	}()
-
-	var lastExpanded string
-	var lastPath string
-	steps := []step{}
-	tokens := []string{params.ZipPath}
-	tokens = append(tokens, strings.Split(params.InnerPath, `#`)...)
-	for i, v := range tokens {
-		e := step{}
-		e.destDir = lastExpanded
-		if i == len(tokens)-1 {
-			e.destination = lastPath
-			e.path = params.FileToAdd
-			e.innerPath = v
-			steps = append(steps, e)
-			break
-		} else if i == 0 {
-			e.path = params.ZipPath
-			e.destination = params.ZipPath
-			e.innerPath = filepath.Base(params.ZipPath)
-			e.destDir = filepath.Dir(params.ZipPath)
-		} else {
-			e.destination = lastPath
-			e.path = filepath.Join(lastExpanded, v)
-			e.innerPath = v
-		}
-		lastPath = e.path
-		lastExpanded, err = extractToTmp(e.path)
-		if err != nil {
-			ui.Errorf(`%s error extracting %s`, v, e.path)
-			break
-		}
-		tmps = append(tmps, lastExpanded)
-		ui.Confidentialf("Extracted %s to %s", e.path, lastExpanded)
-		e.expanded = lastExpanded
-		steps = append(steps, e)
-	}
+	zipWriter := core.NewZipWriter(ui)
+	err = zipWriter.Write(params)
 	if err != nil {
 		return exitErrorf(1, "Error processing %s: %s", params.ZipPath, err.Error())
 	}
+	/*
+		if !files.Exists(params.FileToAdd) {
+			return exitErrorf(1, `Invalid path for the file to add: "%s". Exit`, params.FileToAdd)
+		}
 
-	var s step
-	l := len(steps)
-	first := true
-	for i := l - 1; i > 0; i-- {
-		s = steps[i]
-		if first {
-			ui.Confidentialf("Copy %s in dir %s as %s", s.path, s.destDir, s.innerPath)
-			err = addFileToTmp(s.path, s.destDir, s.innerPath)
+		tmps := []string{}
+		defer func() {
+			for _, t := range tmps {
+				if t != "" {
+					ui.Confidentialf("Cleanup temporary dir: %s", t)
+					os.RemoveAll(t)
+				}
+			}
+		}()
+
+		var lastExpanded string
+		var lastPath string
+		steps := []step{}
+		tokens := []string{params.ZipPath}
+		tokens = append(tokens, strings.Split(params.InnerPath, `#`)...)
+		for i, v := range tokens {
+			e := step{}
+			e.destDir = lastExpanded
+			if i == len(tokens)-1 {
+				e.destination = lastPath
+				e.path = params.FileToAdd
+				e.innerPath = v
+				steps = append(steps, e)
+				break
+			} else if i == 0 {
+				e.path = params.ZipPath
+				e.destination = params.ZipPath
+				e.innerPath = filepath.Base(params.ZipPath)
+				e.destDir = filepath.Dir(params.ZipPath)
+			} else {
+				e.destination = lastPath
+				e.path = filepath.Join(lastExpanded, v)
+				e.innerPath = v
+			}
+			lastPath = e.path
+			lastExpanded, err = extractToTmp(e.path)
 			if err != nil {
-				ui.Errorf(`Error copying %s in dir %s as %s: %v`, s.path, s.destDir, s.innerPath, err)
+				ui.Errorf(`%s error extracting %s`, v, e.path)
 				break
 			}
-			first = false
+			tmps = append(tmps, lastExpanded)
+			ui.Confidentialf("Extracted %s to %s", e.path, lastExpanded)
+			e.expanded = lastExpanded
+			steps = append(steps, e)
 		}
-		err = zipTmp(s.destDir, s.destination)
 		if err != nil {
-			ui.Errorf(`Error zipping %s to %s: %v`, s.destDir, s.destination, err)
-			break
+			return exitErrorf(1, "Error processing %s: %s", params.ZipPath, err.Error())
 		}
-	}
-	if err != nil {
-		return exitErrorf(1, "Error processing %s: %s", params.FileToAdd, err.Error())
-	}
 
+		var s step
+		l := len(steps)
+		first := true
+		for i := l - 1; i > 0; i-- {
+			s = steps[i]
+			if first {
+				ui.Confidentialf("Copy %s in dir %s as %s", s.path, s.destDir, s.innerPath)
+				err = addFileToTmp(s.path, s.destDir, s.innerPath)
+				if err != nil {
+					ui.Errorf(`Error copying %s in dir %s as %s: %v`, s.path, s.destDir, s.innerPath, err)
+					break
+				}
+				first = false
+			}
+			err = zipTmp(s.destDir, s.destination)
+			if err != nil {
+				ui.Errorf(`Error zipping %s to %s: %v`, s.destDir, s.destination, err)
+				break
+			}
+		}
+		if err != nil {
+			return exitErrorf(1, "Error processing %s: %s", params.FileToAdd, err.Error())
+		}
+	*/
 	return nil
 }
 
@@ -158,8 +158,8 @@ func exitErrorf(exitCode int, template string, args ...interface{}) error {
 	return cli.NewExitError(fmt.Sprintf(template, args...), exitCode)
 }
 
-func loadParams(c *cli.Context) (commandParams, error) {
-	params := commandParams{}
+func loadParams(c *cli.Context) (core.WriterRequest, error) {
+	params := core.WriterRequest{}
 
 	fileToAdd := c.String("file")
 	innerPath := c.String("inner")

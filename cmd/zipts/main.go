@@ -8,7 +8,6 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
-	"time"
 
 	"github.com/enr/clui"
 	"github.com/enr/go-files/files"
@@ -91,7 +90,7 @@ func run(c runConfig, showHelp func()) int {
 		}
 	}
 	outputDirectory := c.OutputDir
-	suffix := timestamp()
+	suffix := core.Timestamp()
 	targetFilePath, err := resolveOutputPath(inputDirPath, suffix, outputDirectory)
 	if noop {
 		ui.Lifecyclef("Output file: %s", targetFilePath)
@@ -138,13 +137,6 @@ func main() {
 	}
 	app.Action = mainAction
 	app.Run(os.Args)
-}
-
-func timestamp() string {
-	const layout = "20060102150405"
-	t := time.Now()
-	ts := t.Local().Format(layout)
-	return ts
 }
 
 func resolveInputPath(arg string) (string, error) {

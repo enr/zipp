@@ -63,7 +63,9 @@ specs:
       working_dir: ..
       exe: bin/zipts
       args:
-        - "testdata/"
+        - "--out"
+        - "test/work"
+        - "test/data/01"
       ext:
         windows: .exe
     expectations:

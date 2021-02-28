@@ -28,7 +28,7 @@ func getCurrentDirectory() string {
 
 func TestRun(t *testing.T) {
 	runConfig := runConfig{
-		Args: []string{"notextists"},
+		Args: []string{"notexists"},
 		Noop: false,
 	}
 	showHelp := func() {
@@ -42,7 +42,7 @@ func TestRun(t *testing.T) {
 
 func TestRunNoop(t *testing.T) {
 	runConfig := runConfig{
-		Args: []string{"notextists"},
+		Args: []string{"notexists"},
 		Noop: true,
 	}
 	showHelp := func() {
