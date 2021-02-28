@@ -116,7 +116,7 @@ video {
 <h1>Zipp</h1>
 <div class="details">
 <span id="author" class="author">zipp contributors</span><br>
-<span id="revnumber">version 0.6.0</span>
+<span id="revnumber">version 0.7.0</span>
 </div>
 </div>
 <div id="content">
@@ -136,7 +136,7 @@ video {
 <div class="paragraph">
 <p><a href="https://github.com/enr/zipp/releases/latest">Download last artifacts</a> |
  <a href="https://enr.github.io/zipp/pdf/zipp_manual.pdf">This manual as PDF</a> |
- Build revision <code>fbc2124933e8d95f3cd2508d426c9a94ee111210</code></p>
+ Build revision <code>9499dfc77612f9f19482448715666d0565b2ff03</code></p>
 </div>
 </div>
 </div>
@@ -159,6 +159,65 @@ video {
 </li>
 </ul>
 </div>
+<div class="paragraph">
+<p><strong>Zipw</strong></p>
+</div>
+<div class="paragraph">
+<p>Add file to zip.</p>
+</div>
+<div class="paragraph">
+<p>Add the file <code>README.md</code> to the zip <code>dist/zipp-0.7.0-dev_linux_amd64.zip</code> in the path <code>zipp-0.7.0-dev_linux_amd64/myreadme.md</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ zipw -f README.md -i 'zipp-0.7.0-dev_linux_amd64/myreadme.md' -z dist/zipp-0.7.0-dev_linux_amd64.zip
+$ zipls dist/zipp-0.7.0-dev_linux_amd64.zip
+zipp-0.7.0-dev_linux_amd64/myreadme.md
+zipp-0.7.0-dev_linux_amd64/zipls
+zipp-0.7.0-dev_linux_amd64/zipw
+zipp-0.7.0-dev_linux_amd64/zipts</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Nested write is supported.</p>
+</div>
+<div class="paragraph">
+<p>Add the file <code>README.md</code> in the path <code>com/example/readme.md</code> into the file <code>WEB-INF/lib/library.jar</code>
+into the file <code>webapp.war</code> into the file <code>corporate.ear</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ zipw -f README.md -i 'webapp.war#WEB-INF/lib/library.jar#com/example/readme.md' -z corporate.ear</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Zipls</strong></p>
+</div>
+<div class="paragraph">
+<p>List contents of a zip file.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ zipls dist/zipp-0.7.0-dev_linux_amd64.zip
+zipp-0.7.0-dev_linux_amd64/
+zipp-0.7.0-dev_linux_amd64/zipls
+zipp-0.7.0-dev_linux_amd64/zipw
+zipp-0.7.0-dev_linux_amd64/zipts</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Zipts</strong></p>
+</div>
+<div class="paragraph">
+<p>Create a zip file with timestamp suffix:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ zipts testdata/
+Zipping  /home/enrico/Projects/zipp/testdata
+Completed /home/enrico/Projects/zipp/testdata-20210227173843.zip</pre>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -172,8 +231,8 @@ video {
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 0.6.0<br>
-Last updated 2021-02-23 18:50:19 UTC
+Version 0.7.0<br>
+Last updated 2021-02-28 16:51:22 UTC
 </div>
 </div>
 </body>
