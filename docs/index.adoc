@@ -26,6 +26,31 @@ Zip utilities:
 - `zipts`: creates a zip file with a timestamp suffix in the name
 - `zipw`: add file to existing zip
 
+
+**Zipw**
+
+Add file to zip.
+
+Add the file `README.md` to the zip `dist/zipp-0.7.0-dev_linux_amd64.zip` in the path `zipp-0.7.0-dev_linux_amd64/myreadme.md`:
+
+----
+$ zipw -f README.md -i 'zipp-0.7.0-dev_linux_amd64/myreadme.md' -z dist/zipp-0.7.0-dev_linux_amd64.zip 
+$ zipls dist/zipp-0.7.0-dev_linux_amd64.zip 
+zipp-0.7.0-dev_linux_amd64/myreadme.md
+zipp-0.7.0-dev_linux_amd64/zipls
+zipp-0.7.0-dev_linux_amd64/zipw
+zipp-0.7.0-dev_linux_amd64/zipts
+----
+
+Nested write is supported.
+
+Add the file `README.md` in the path `com/example/readme.md` into the file `WEB-INF/lib/library.jar` 
+into the file `webapp.war` into the file `corporate.ear`:
+
+----
+$ zipw -f README.md -i 'webapp.war#WEB-INF/lib/library.jar#com/example/readme.md' -z corporate.ear 
+----
+
 **Zipls**
 
 List contents of a zip file.
@@ -48,22 +73,7 @@ Zipping  /home/enrico/Projects/zipp/testdata
 Completed /home/enrico/Projects/zipp/testdata-20210227173843.zip
 ----
 
-**Zipw**
-
-Add file to zip.
-
-Add the file `README.md` to the zip `dist/zipp-0.7.0-dev_linux_amd64.zip` in the path `zipp-0.7.0-dev_linux_amd64/myreadme.md`:
-
-----
-$ zipw -f README.md -i 'zipp-0.7.0-dev_linux_amd64/myreadme.md' -z dist/zipp-0.7.0-dev_linux_amd64.zip 
-$ zipls dist/zipp-0.7.0-dev_linux_amd64.zip 
-zipp-0.7.0-dev_linux_amd64/myreadme.md
-zipp-0.7.0-dev_linux_amd64/zipls
-zipp-0.7.0-dev_linux_amd64/zipw
-zipp-0.7.0-dev_linux_amd64/zipts
-----
 
 ## License
 
 http://www.apache.org/licenses/LICENSE-2.0[Apache License 2.0] - Copyright (C) 2016-TODAY {project-authors}.
-
