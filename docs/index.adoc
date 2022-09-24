@@ -73,6 +73,11 @@ Zipping  /home/enrico/Projects/zipp/testdata
 Completed /home/enrico/Projects/zipp/testdata-20210227173843.zip
 ----
 
+It is possible to exclude files from zip:
+
+----
+$ zipts -x '\.git/*' -x 'vendor/*' .
+----
 
 ## License
 

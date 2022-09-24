@@ -45,7 +45,7 @@ type runConfig struct {
 	Args      []string
 	Noop      bool
 	OutputDir string
-	Exclude   string
+	Exclude   []string
 }
 
 func mainAction(c *cli.Context) {
@@ -71,7 +71,7 @@ func mainAction(c *cli.Context) {
 		Args:      c.Args(),
 		Noop:      c.Bool("noop"),
 		OutputDir: c.String("out"),
-		Exclude:   c.String("exclude"),
+		Exclude:   c.StringSlice("exclude"),
 	}
 	os.Exit(run(runConfig, showHelp))
 }
@@ -92,7 +92,7 @@ func run(c runConfig, showHelp func()) int {
 		}
 	}
 	outputDirectory := c.OutputDir
-	exclusions := []string{c.Exclude}
+	exclusions := c.Exclude
 	suffix := core.Timestamp()
 	targetFilePath, err := resolveOutputPath(inputDirPath, suffix, outputDirectory)
 	if noop {
@@ -137,7 +137,7 @@ func main() {
 		cli.BoolFlag{Name: "quiet, q", Usage: "quiet mode"},
 		cli.BoolFlag{Name: "verbose, V", Usage: "verbose mode"},
 		cli.StringFlag{Name: "out, o", Usage: "output directory"},
-		cli.StringFlag{Name: "exclude, x", Usage: "exclude path"},
+		cli.StringSliceFlag{Name: "exclude, x", Usage: "exclude path"},
 	}
 	app.Action = mainAction
 	app.Run(os.Args)
