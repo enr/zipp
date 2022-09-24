@@ -45,6 +45,7 @@ type runConfig struct {
 	Args      []string
 	Noop      bool
 	OutputDir string
+	Exclude   string
 }
 
 func mainAction(c *cli.Context) {
@@ -70,6 +71,7 @@ func mainAction(c *cli.Context) {
 		Args:      c.Args(),
 		Noop:      c.Bool("noop"),
 		OutputDir: c.String("out"),
+		Exclude:   c.String("exclude"),
 	}
 	os.Exit(run(runConfig, showHelp))
 }
@@ -90,6 +92,7 @@ func run(c runConfig, showHelp func()) int {
 		}
 	}
 	outputDirectory := c.OutputDir
+	exclusions := []string{c.Exclude}
 	suffix := core.Timestamp()
 	targetFilePath, err := resolveOutputPath(inputDirPath, suffix, outputDirectory)
 	if noop {
@@ -107,7 +110,7 @@ func run(c runConfig, showHelp func()) int {
 	if noop {
 		ui.Warnf("Operating in NOOP mode. Exit without zip")
 	} else {
-		err := zipext.Create(inputDirPath, targetFilePath)
+		err := zipext.CreateExcluding(inputDirPath, targetFilePath, exclusions)
 		if err != nil {
 			ui.Errorf("Error creating %s : %v", targetFilePath, err)
 			if files.Exists(targetFilePath) {
@@ -134,6 +137,7 @@ func main() {
 		cli.BoolFlag{Name: "quiet, q", Usage: "quiet mode"},
 		cli.BoolFlag{Name: "verbose, V", Usage: "verbose mode"},
 		cli.StringFlag{Name: "out, o", Usage: "output directory"},
+		cli.StringFlag{Name: "exclude, x", Usage: "exclude path"},
 	}
 	app.Action = mainAction
 	app.Run(os.Args)
