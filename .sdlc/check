@@ -45,15 +45,15 @@ echo "Environment PATH=${PATH}"
 cd $(mktemp -d)
 
 hash golint 2>/dev/null || {
-  go get -u golang.org/x/lint/golint
+  go install golang.org/x/lint/golint@latest
 }
 
 hash goimports 2>/dev/null || {
-  go get -u golang.org/x/tools/cmd/goimports
+  go install golang.org/x/tools/cmd/goimports@latest
 }
 
 hash gocyclo 2>/dev/null || {
-  go get -u github.com/fzipp/gocyclo/cmd/gocyclo
+  go install github.com/fzipp/gocyclo/cmd/gocyclo@latest
 }
 
 [[ -n "$SDLC_GO_VENDOR" ]] && {

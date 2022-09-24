@@ -1,36 +1,52 @@
-# github.com/cpuguy83/go-md2man/v2 v2.0.0
+# github.com/cpuguy83/go-md2man/v2 v2.0.2
+## explicit; go 1.11
 github.com/cpuguy83/go-md2man/v2/md2man
-# github.com/enr/clui v0.0.0-20201016165326-efdcff635536
+# github.com/enr/clui v0.0.0-20211121125910-b2c5cd7b6dc9
+## explicit; go 1.17
 github.com/enr/clui
 # github.com/enr/go-files v0.3.0
+## explicit; go 1.15
 github.com/enr/go-files/files
 # github.com/enr/qac v0.2.0
+## explicit; go 1.15
 github.com/enr/qac
 # github.com/enr/runcmd v0.5.0
+## explicit; go 1.13
 github.com/enr/runcmd
-# github.com/enr/zipext v0.3.0
+# github.com/enr/zipext v0.4.0
+## explicit; go 1.15
 github.com/enr/zipext
 # github.com/extemporalgenome/slug v0.0.0-20150414033109-0320c85e32e0
+## explicit
 github.com/extemporalgenome/slug
-# github.com/mattn/go-colorable v0.1.8
+# github.com/mattn/go-colorable v0.1.13
+## explicit; go 1.15
 github.com/mattn/go-colorable
-# github.com/mattn/go-isatty v0.0.12
+# github.com/mattn/go-isatty v0.0.16
+## explicit; go 1.15
 github.com/mattn/go-isatty
 # github.com/mitchellh/colorstring v0.0.0-20190213212951-d06e56a500db
+## explicit
 github.com/mitchellh/colorstring
 # github.com/mitchellh/go-homedir v1.1.0
+## explicit
 github.com/mitchellh/go-homedir
 # github.com/russross/blackfriday/v2 v2.1.0
+## explicit
 github.com/russross/blackfriday/v2
 # github.com/subosito/gotenv v1.2.0
+## explicit
 github.com/subosito/gotenv
-# github.com/urfave/cli v1.22.5
+# github.com/urfave/cli v1.22.10
+## explicit; go 1.11
 github.com/urfave/cli
-# golang.org/x/sys v0.0.0-20210228012217-479acdf4ea46
-golang.org/x/sys/internal/unsafeheader
+# golang.org/x/sys v0.0.0-20220919091848-fb04ddd9f9c8
+## explicit; go 1.17
 golang.org/x/sys/unix
-# golang.org/x/text v0.3.5
+# golang.org/x/text v0.3.7
+## explicit; go 1.17
 golang.org/x/text/transform
 golang.org/x/text/unicode/norm
 # gopkg.in/yaml.v2 v2.4.0
+## explicit; go 1.15
 gopkg.in/yaml.v2
