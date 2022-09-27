@@ -116,7 +116,7 @@ video {
 <h1>Zipp</h1>
 <div class="details">
 <span id="author" class="author">zipp contributors</span><br>
-<span id="revnumber">version 0.7.0</span>
+<span id="revnumber">version 0.7.1</span>
 </div>
 </div>
 <div id="content">
@@ -136,7 +136,7 @@ video {
 <div class="paragraph">
 <p><a href="https://github.com/enr/zipp/releases/latest">Download last artifacts</a> |
  <a href="https://enr.github.io/zipp/pdf/zipp_manual.pdf">This manual as PDF</a> |
- Build revision <code>9499dfc77612f9f19482448715666d0565b2ff03</code></p>
+ Build revision <code>766330febeb59c3ee64f2f19c355fc20723600bd</code></p>
 </div>
 </div>
 </div>
@@ -218,6 +218,14 @@ Zipping  /home/enrico/Projects/zipp/testdata
 Completed /home/enrico/Projects/zipp/testdata-20210227173843.zip</pre>
 </div>
 </div>
+<div class="paragraph">
+<p>It is possible to exclude files from zip:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ zipts -x '\.git/*' -x 'vendor/*' .</pre>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -231,8 +239,8 @@ Completed /home/enrico/Projects/zipp/testdata-20210227173843.zip</pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 0.7.0<br>
-Last updated 2021-02-28 16:51:22 UTC
+Version 0.7.1<br>
+Last updated 2022-09-27 19:16:48 UTC
 </div>
 </div>
 </body>
