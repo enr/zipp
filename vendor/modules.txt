@@ -1,4 +1,4 @@
-# github.com/cpuguy83/go-md2man/v2 v2.0.2
+# github.com/cpuguy83/go-md2man/v2 v2.0.4
 ## explicit; go 1.11
 github.com/cpuguy83/go-md2man/v2/md2man
 # github.com/enr/clui v0.0.0-20211121125910-b2c5cd7b6dc9
@@ -22,7 +22,7 @@ github.com/extemporalgenome/slug
 # github.com/mattn/go-colorable v0.1.13
 ## explicit; go 1.15
 github.com/mattn/go-colorable
-# github.com/mattn/go-isatty v0.0.16
+# github.com/mattn/go-isatty v0.0.20
 ## explicit; go 1.15
 github.com/mattn/go-isatty
 # github.com/mitchellh/colorstring v0.0.0-20190213212951-d06e56a500db
@@ -37,11 +37,11 @@ github.com/russross/blackfriday/v2
 # github.com/subosito/gotenv v1.2.0
 ## explicit
 github.com/subosito/gotenv
-# github.com/urfave/cli v1.22.10
+# github.com/urfave/cli v1.22.15
 ## explicit; go 1.11
 github.com/urfave/cli
-# golang.org/x/sys v0.0.0-20220919091848-fb04ddd9f9c8
-## explicit; go 1.17
+# golang.org/x/sys v0.23.0
+## explicit; go 1.18
 golang.org/x/sys/unix
 # golang.org/x/text v0.3.7
 ## explicit; go 1.17
