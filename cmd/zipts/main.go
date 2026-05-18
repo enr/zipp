@@ -46,6 +46,8 @@ type runConfig struct {
 	Noop      bool
 	OutputDir string
 	Exclude   []string
+	Verbose   bool
+	Quiet     bool
 }
 
 func mainAction(c *cli.Context) {
@@ -60,6 +62,7 @@ func mainAction(c *cli.Context) {
 
 	if len(c.Args()) < 1 {
 		ui.Error(missingParamInputPath)
+		ui.Errorf("Hint:  %s", core.Hint("missing_arg"))
 		cli.ShowAppHelp(c)
 		os.Exit(3)
 	}
@@ -72,6 +75,8 @@ func mainAction(c *cli.Context) {
 		Noop:      c.Bool("noop"),
 		OutputDir: c.String("out"),
 		Exclude:   c.StringSlice("exclude"),
+		Verbose:   c.Bool("verbose"),
+		Quiet:     c.Bool("quiet"),
 	}
 	os.Exit(run(runConfig, showHelp))
 }
@@ -86,6 +91,7 @@ func run(c runConfig, showHelp func()) int {
 	}
 	if !files.Exists(inputDirPath) {
 		ui.Errorf("%s not found. exit", inputDirPath)
+		ui.Errorf("Hint:  %s", core.Hint("file_not_found"))
 		if !noop {
 			showHelp()
 			return 3
@@ -104,26 +110,28 @@ func run(c runConfig, showHelp func()) int {
 	}
 	if err != nil {
 		ui.Errorf("Error %v", err)
+		ui.Errorf("Hint:  %s", core.Hint("output_dir_not_found"))
 		return 4
 	}
 	ui.Confidentialf("Writing to: %s", targetFilePath)
-	if noop {
-		ui.Warnf("Operating in NOOP mode. Exit without zip")
-	} else {
-		err := zipext.CreateExcluding(inputDirPath, targetFilePath, exclusions)
-		if err != nil {
-			ui.Errorf("Error creating %s : %v", targetFilePath, err)
-			if files.Exists(targetFilePath) {
-				os.Remove(targetFilePath)
-			}
-			return 5
+
+	// Show spinner in medium verbosity (not quiet, not verbose)
+	stopSpinner := func() {}
+	if !c.Quiet && !c.Verbose {
+		stopSpinner = core.StartSpinner(fmt.Sprintf("Compressing %s ...", filepath.Base(inputDirPath)))
+	}
+
+	err = zipext.CreateExcluding(inputDirPath, targetFilePath, exclusions)
+	stopSpinner()
+
+	if err != nil {
+		ui.Errorf("Error creating %s : %v", targetFilePath, err)
+		if files.Exists(targetFilePath) {
+			os.Remove(targetFilePath)
 		}
+		return 5
 	}
-	if noop {
-		ui.Successf("NOOP, skip creating %s", targetFilePath)
-	} else {
-		ui.Successf("Completed %s", targetFilePath)
-	}
+	ui.Successf("Completed %s", targetFilePath)
 	return 0
 }
 
@@ -133,11 +141,11 @@ func main() {
 	app.Version = appVersion
 	app.Usage = "Creates zip archive named after the current timestamp."
 	app.Flags = []cli.Flag{
-		cli.BoolFlag{Name: "noop, N", Usage: "noop mode"},
+		cli.BoolFlag{Name: "noop, N", Usage: "noop mode: print output path without creating the archive"},
 		cli.BoolFlag{Name: "quiet, q", Usage: "quiet mode"},
 		cli.BoolFlag{Name: "verbose, V", Usage: "verbose mode"},
 		cli.StringFlag{Name: "out, o", Usage: "output directory"},
-		cli.StringSliceFlag{Name: "exclude, x", Usage: "exclude path"},
+		cli.StringSliceFlag{Name: "exclude, x", Usage: "exclude files matching pattern (repeatable)"},
 	}
 	app.Action = mainAction
 	app.Run(os.Args)

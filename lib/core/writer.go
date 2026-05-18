@@ -13,11 +13,14 @@ import (
 	"github.com/enr/zipext"
 )
 
-// WriterRequest represent request for a write operation
+// WriterRequest represents a request for a write operation.
 type WriterRequest struct {
-	FileToAdd string `yaml:"file"`
-	InnerPath string `yaml:"inner"`
-	ZipPath   string `yaml:"zip"`
+	FileToAdd   string `yaml:"file"`
+	InnerPath   string `yaml:"inner"`
+	ZipPath     string `yaml:"zip"`
+	DryRun      bool
+	Force       bool
+	NoOverwrite bool
 }
 
 type step struct {
@@ -28,19 +31,23 @@ type step struct {
 	innerPath   string
 }
 
-// ZipWriter write content to a zip
+// ZipWriter writes content to a zip archive.
 type ZipWriter struct {
 	ui *clui.Clui
 }
 
-// NewZipWriter factory function for zip writer component
+// NewZipWriter is the factory function for ZipWriter.
 func NewZipWriter(ui *clui.Clui) *ZipWriter {
 	return &ZipWriter{ui: ui}
 }
 
 func (w *ZipWriter) Write(params WriterRequest) error {
 	if !files.Exists(params.FileToAdd) {
-		return fmt.Errorf(`Invalid path for the file to add: "%s". Exit`, params.FileToAdd)
+		return fmt.Errorf(`invalid path for the file to add: "%s"`, params.FileToAdd)
+	}
+
+	if params.DryRun {
+		return w.dryRun(params)
 	}
 
 	tmps := []string{}
@@ -99,6 +106,9 @@ func (w *ZipWriter) Write(params WriterRequest) error {
 	for i := l - 1; i > 0; i-- {
 		s = steps[i]
 		if first {
+			if err = w.checkOverwrite(s, params); err != nil {
+				return err
+			}
 			w.ui.Confidentialf("Copy %s in dir %s as %s", s.path, s.destDir, s.innerPath)
 			err = addFileToTmp(s.path, s.destDir, s.innerPath)
 			if err != nil {
@@ -113,16 +123,57 @@ func (w *ZipWriter) Write(params WriterRequest) error {
 			break
 		}
 	}
+	return err
+}
+
+// checkOverwrite verifies whether the target entry already exists and handles
+// the overwrite policy (force / no-overwrite / interactive prompt).
+func (w *ZipWriter) checkOverwrite(s step, params WriterRequest) error {
+	if params.Force {
+		return nil
+	}
+	candidate := path.Join(s.destDir, s.innerPath)
+	if !files.Exists(candidate) {
+		return nil
+	}
+	if params.NoOverwrite {
+		return fmt.Errorf("entry %q already exists in archive — aborting (use --force to overwrite)", s.innerPath)
+	}
+	answer, err := w.ui.QuestionWithDefault(
+		fmt.Sprintf("Warning: %q already exists in the archive. Overwrite?", s.innerPath),
+		"no",
+	)
 	if err != nil {
 		return err
 	}
+	answer = strings.ToLower(strings.TrimSpace(answer))
+	if answer != "y" && answer != "yes" {
+		return fmt.Errorf("skipped: entry %q not overwritten", s.innerPath)
+	}
+	return nil
+}
 
+// dryRun prints what would happen without touching any file.
+func (w *ZipWriter) dryRun(params WriterRequest) error {
+	tokens := []string{params.ZipPath}
+	tokens = append(tokens, strings.Split(params.InnerPath, `#`)...)
+	finalInnerPath := tokens[len(tokens)-1]
+
+	fmt.Fprintf(os.Stderr, "[dry-run] Would add:     %s\n", params.FileToAdd)
+	fmt.Fprintf(os.Stderr, "[dry-run] Destination:   %s :: %s\n", params.ZipPath, finalInnerPath)
+
+	if len(tokens) > 2 {
+		nesting := strings.Join(tokens[:len(tokens)-1], " → ")
+		fmt.Fprintf(os.Stderr, "[dry-run] Nesting path:  %s\n", nesting)
+		fmt.Fprintf(os.Stderr, "[dry-run] Would extract and re-pack each layer.\n")
+	}
+	fmt.Fprintf(os.Stderr, "[dry-run] No files written.\n")
 	return nil
 }
 
 func extractToTmp(zipPath string) (string, error) {
 	if !files.IsRegular(zipPath) {
-		return "", fmt.Errorf(`Invalid zip file "%s"`, zipPath)
+		return "", fmt.Errorf(`invalid zip file "%s"`, zipPath)
 	}
 	dir, err := ioutil.TempDir("", "zipw_")
 	if err != nil {
