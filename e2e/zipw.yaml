@@ -54,7 +54,8 @@ specs:
         equals_to: 2
       output:
         stdout:
-          contains: Do you want to use a params file
+          contains_all:
+            - Do you want to use a params file
         stderr:
           contains_all:
             - 'Params file not found'

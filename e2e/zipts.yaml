@@ -54,7 +54,8 @@ specs:
         equals_to: 3
       output:
         stdout:
-          contains: USAGE
+          contains_all:
+            - USAGE
         stderr:
           contains_all:
             - 'I was expecting at least 1 argument: the path to zip.'
