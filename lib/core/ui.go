@@ -10,6 +10,7 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
+// Verbosity levels for UI output.
 const (
 	VerbosityQuiet   = 0
 	VerbosityMedium  = 1
@@ -45,22 +46,26 @@ func (u *UI) Error(msg string) {
 	fmt.Fprintln(u.stderr, styleError.Render(msg))
 }
 
+// Errorf formats and prints an error message to stderr.
 func (u *UI) Errorf(format string, args ...interface{}) {
 	u.Error(fmt.Sprintf(format, args...))
 }
 
+// Successf formats and prints a success message when verbosity >= VerbosityMedium.
 func (u *UI) Successf(format string, args ...interface{}) {
 	if u.Verbosity >= VerbosityMedium {
 		fmt.Fprintln(u.stdout, styleSuccess.Render(fmt.Sprintf(format, args...)))
 	}
 }
 
+// Lifecyclef formats and prints a lifecycle message when verbosity >= VerbosityMedium.
 func (u *UI) Lifecyclef(format string, args ...interface{}) {
 	if u.Verbosity >= VerbosityMedium {
 		fmt.Fprintln(u.stdout, styleLifecycle.Render(fmt.Sprintf(format, args...)))
 	}
 }
 
+// Confidentialf formats and prints a dimmed message to stderr when verbosity >= VerbosityVerbose.
 func (u *UI) Confidentialf(format string, args ...interface{}) {
 	if u.Verbosity >= VerbosityVerbose {
 		fmt.Fprintln(u.stderr, styleDim.Render(fmt.Sprintf(format, args...)))
