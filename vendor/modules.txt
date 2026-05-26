@@ -7,13 +7,13 @@ github.com/enr/clui
 # github.com/enr/go-files v0.3.0
 ## explicit; go 1.15
 github.com/enr/go-files/files
-# github.com/enr/qac v0.2.0
-## explicit; go 1.15
+# github.com/enr/qac v0.5.0
+## explicit; go 1.25.0
 github.com/enr/qac
-# github.com/enr/runcmd v0.5.0
-## explicit; go 1.13
+# github.com/enr/runcmd v0.6.1
+## explicit; go 1.22
 github.com/enr/runcmd
-# github.com/enr/zipext v0.4.1
+# github.com/enr/zipext v0.5.0
 ## explicit; go 1.15
 github.com/enr/zipext
 # github.com/extemporalgenome/slug v0.0.0-20150414033109-0320c85e32e0
@@ -40,14 +40,17 @@ github.com/subosito/gotenv
 # github.com/urfave/cli v1.22.17
 ## explicit; go 1.11
 github.com/urfave/cli
-# golang.org/x/sys v0.44.0
+# golang.org/x/sys v0.45.0
 ## explicit; go 1.25.0
 golang.org/x/sys/unix
 golang.org/x/sys/windows
-# golang.org/x/text v0.3.7
-## explicit; go 1.17
+# golang.org/x/text v0.37.0
+## explicit; go 1.25.0
 golang.org/x/text/transform
 golang.org/x/text/unicode/norm
 # gopkg.in/yaml.v2 v2.4.0
 ## explicit; go 1.15
 gopkg.in/yaml.v2
+# gopkg.in/yaml.v3 v3.0.1
+## explicit
+gopkg.in/yaml.v3

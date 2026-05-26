@@ -6,25 +6,33 @@ func (a *FileSystemAssertion) actualAssertion(context planContext) (assertion, e
 	fa := a.File != ""
 	da := a.Directory != ""
 	if fa && da {
-		return nil, fmt.Errorf("Invalid file system assertion: file %s directory %s", a.File, a.Directory)
+		return nil, asConfigError(fmt.Errorf("invalid file system assertion: file %s directory %s", a.File, a.Directory))
 	}
 	shouldExists := a.Exists == nil || *a.Exists
 	if fa {
-		// TODO check invalid fields
+		if len(a.ContainsExactly) > 0 {
+			return nil, asConfigError(fmt.Errorf("field contains_exactly is not valid for file assertion %q", a.File))
+		}
 		return &FileAssertion{
-			Path:         a.File,
-			Extension:    a.Extension,
-			Exists:       shouldExists,
-			ContainsAll:  a.ContainsAll,
-			ContainsAny:  a.ContainsAny,
-			EqualsTo:     a.EqualsTo,
-			TextEqualsTo: a.TextEqualsTo,
+			Path:             a.File,
+			Extension:        a.Extension,
+			Exists:           &shouldExists,
+			ContainsAll:      a.ContainsAll,
+			ContainsAny:      a.ContainsAny,
+			EqualsTo:         a.EqualsTo,
+			TextEqualsTo:     a.TextEqualsTo,
+			ContainsMatching: a.ContainsMatching,
 		}, nil
 	}
-	// TODO check invalid fields
+	if a.TextEqualsTo != "" {
+		return nil, asConfigError(fmt.Errorf("field text_equals_to is not valid for directory assertion %q", a.Directory))
+	}
+	if a.ContainsMatching != "" {
+		return nil, asConfigError(fmt.Errorf("field contains_matching is not valid for directory assertion %q", a.Directory))
+	}
 	return &DirectoryAssertion{
 		Path:            a.Directory,
-		Exists:          shouldExists,
+		Exists:          &shouldExists,
 		ContainsAll:     a.ContainsAll,
 		ContainsAny:     a.ContainsAny,
 		EqualsTo:        a.EqualsTo,
