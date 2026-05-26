@@ -10,7 +10,7 @@ require (
 	github.com/enr/zipext v0.5.0
 	github.com/mattn/go-isatty v0.0.22
 	github.com/urfave/cli v1.22.17
-	gopkg.in/yaml.v2 v2.4.0
+	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
@@ -44,5 +44,4 @@ require (
 	golang.org/x/sync v0.20.0 // indirect
 	golang.org/x/sys v0.45.0 // indirect
 	golang.org/x/text v0.37.0 // indirect
-	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
