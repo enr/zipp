@@ -8,7 +8,6 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/enr/clui"
 	"github.com/enr/go-files/files"
 	"github.com/enr/zipext"
 )
@@ -33,11 +32,11 @@ type step struct {
 
 // ZipWriter writes content to a zip archive.
 type ZipWriter struct {
-	ui *clui.Clui
+	ui *UI
 }
 
 // NewZipWriter is the factory function for ZipWriter.
-func NewZipWriter(ui *clui.Clui) *ZipWriter {
+func NewZipWriter(ui *UI) *ZipWriter {
 	return &ZipWriter{ui: ui}
 }
 

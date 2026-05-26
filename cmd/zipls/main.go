@@ -8,11 +8,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/charmbracelet/lipgloss"
 	"github.com/enr/go-files/files"
 	"github.com/enr/zipext"
-	"github.com/mattn/go-colorable"
 	"github.com/mattn/go-isatty"
-	"github.com/mitchellh/colorstring"
 	"github.com/urfave/cli"
 
 	"github.com/enr/zipp/lib/core"
@@ -25,10 +24,12 @@ var (
 Revision: %s
 Build date: %s
 `
-	stdout     = colorable.NewColorableStdout()
-	stderr     = colorable.NewColorableStderr()
+	stdout     = os.Stdout
+	stderr     = os.Stderr
 	grepColor  = ""
 	appVersion = fmt.Sprintf(versionTemplate, core.Version, core.GitCommit, core.BuildTime)
+
+	styleGrepMatch = lipgloss.NewStyle().Foreground(lipgloss.Color("2"))
 )
 
 type entryInfo struct {
@@ -166,7 +167,7 @@ func coloredName(name string) string {
 	if grepColor == "" || !colorEnabled() {
 		return name
 	}
-	return strings.Replace(name, grepColor, colorstring.Color("[green]"+grepColor+"[reset]"), -1)
+	return strings.Replace(name, grepColor, styleGrepMatch.Render(grepColor), -1)
 }
 
 func runApp(args []string) {

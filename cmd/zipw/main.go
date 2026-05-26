@@ -4,14 +4,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"path"
-	"path/filepath"
 	"strings"
 
-	"github.com/enr/clui"
-	"github.com/enr/go-files/files"
-	"github.com/enr/zipext"
-	"github.com/mattn/go-colorable"
 	"github.com/urfave/cli"
 	"gopkg.in/yaml.v2"
 
@@ -19,7 +13,7 @@ import (
 )
 
 var (
-	ui              *clui.Clui
+	ui              *core.UI
 	versionTemplate = `%s
 Revision: %s
 Build date: %s
@@ -27,39 +21,19 @@ Build date: %s
 	appVersion = fmt.Sprintf(versionTemplate, core.Version, core.GitCommit, core.BuildTime)
 )
 
-func getUI(level clui.VerbosityLevel) *clui.Clui {
-	return &clui.Clui{
-		Layout:         &clui.PlainLayout{},
-		VerbosityLevel: level,
-		Interactive:    true,
-		Color:          true,
-		Reader:         os.Stdin,
-		StdWriter:      colorable.NewColorableStdout(),
-		ErrorWriter:    colorable.NewColorableStderr(),
-	}
-}
-
 func main() {
 	runApp(os.Args)
 }
 
-type step struct {
-	path        string
-	expanded    string
-	destination string
-	destDir     string
-	innerPath   string
-}
-
 func mainAction(c *cli.Context) error {
-	verbosityLevel := clui.VerbosityLevelMedium
+	verbosity := core.VerbosityMedium
 	if c.Bool("verbose") {
-		verbosityLevel = clui.VerbosityLevelHigh
+		verbosity = core.VerbosityVerbose
 	}
 	if c.Bool("quiet") {
-		verbosityLevel = clui.VerbosityLevelLow
+		verbosity = core.VerbosityQuiet
 	}
-	ui = getUI(verbosityLevel)
+	ui = core.NewUI(verbosity)
 
 	params, err := loadParams(c)
 	if err != nil {
@@ -71,7 +45,6 @@ func mainAction(c *cli.Context) error {
 
 	ui.Confidentialf("Adding file=%s to zip=%s in path inner=%s", params.FileToAdd, params.ZipPath, params.InnerPath)
 
-	// Show spinner during the write operation (medium verbosity only)
 	stopSpinner := func() {}
 	if !c.Bool("quiet") && !c.Bool("verbose") && !params.DryRun {
 		stopSpinner = core.StartSpinner(fmt.Sprintf("Updating %s ...", params.ZipPath))
@@ -150,44 +123,4 @@ func runApp(args []string) {
 
 	app.Action = mainAction
 	app.Run(args)
-}
-
-func extractToTmp(zipPath string) (string, error) {
-	if !files.IsRegular(zipPath) {
-		return "", fmt.Errorf(`Invalid zip file "%s"`, zipPath)
-	}
-	dir, err := ioutil.TempDir("", "zipw_")
-	if err != nil {
-		return "", err
-	}
-	err = zipext.Extract(zipPath, dir)
-	if err != nil {
-		return "", err
-	}
-	return dir, nil
-}
-
-func addFileToTmp(fileToAdd string, dir string, innerPath string) error {
-	if len(strings.TrimSpace(innerPath)) == 0 {
-		innerPath = fileToAdd
-	}
-	innerAbsolutePath := path.Join(dir, innerPath)
-	innerDir, err := filepath.Abs(filepath.Dir(innerAbsolutePath))
-	if err != nil {
-		return err
-	}
-	os.MkdirAll(innerDir, 0755)
-	err = files.Copy(fileToAdd, innerAbsolutePath)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func zipTmp(dir string, zipPath string) error {
-	err := zipext.CreateFlat(dir, zipPath)
-	if err != nil {
-		return err
-	}
-	return nil
 }

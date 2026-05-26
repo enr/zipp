@@ -8,7 +8,6 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/enr/clui"
 	"github.com/enr/go-files/files"
 )
 
@@ -30,13 +29,7 @@ func TestRun(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	verbosity := func(ui *clui.Clui) {
-		ui.VerbosityLevel = clui.VerbosityLevelHigh
-	}
-	ui, err := clui.NewClui(verbosity)
-	if err != nil {
-		t.Error(err)
-	}
+	ui := NewUI(VerbosityVerbose)
 	sut := NewZipWriter(ui)
 
 	innerPathLastToken := fmt.Sprintf(`com/example/readme-%s.md`, salt)

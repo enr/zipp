@@ -5,12 +5,12 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/enr/clui"
+	"github.com/enr/zipp/lib/core"
 )
 
 func init() {
 	if ui == nil {
-		ui = getUI(clui.VerbosityLevelMute)
+		ui = core.NewUI(core.VerbosityQuiet)
 	}
 }
 

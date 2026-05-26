@@ -9,10 +9,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/enr/clui"
 	"github.com/enr/go-files/files"
 	"github.com/enr/zipext"
-	"github.com/mattn/go-colorable"
 	"github.com/urfave/cli"
 
 	"github.com/enr/zipp/lib/core"
@@ -21,25 +19,13 @@ import (
 const missingParamInputPath string = "Oops... I was expecting at least 1 argument: the path to zip."
 
 var (
-	ui              *clui.Clui
+	ui              *core.UI
 	versionTemplate = `%s
 Revision: %s
 Build date: %s
 `
 	appVersion = fmt.Sprintf(versionTemplate, core.Version, core.GitCommit, core.BuildTime)
 )
-
-func getUI(level clui.VerbosityLevel) *clui.Clui {
-	return &clui.Clui{
-		Layout:         &clui.PlainLayout{},
-		VerbosityLevel: level,
-		Interactive:    true,
-		Color:          true,
-		Reader:         os.Stdin,
-		StdWriter:      colorable.NewColorableStdout(),
-		ErrorWriter:    colorable.NewColorableStderr(),
-	}
-}
 
 type runConfig struct {
 	Args      []string
@@ -51,14 +37,14 @@ type runConfig struct {
 }
 
 func mainAction(c *cli.Context) {
-	verbosityLevel := clui.VerbosityLevelMedium
+	verbosity := core.VerbosityMedium
 	if c.Bool("verbose") {
-		verbosityLevel = clui.VerbosityLevelHigh
+		verbosity = core.VerbosityVerbose
 	}
 	if c.Bool("quiet") {
-		verbosityLevel = clui.VerbosityLevelLow
+		verbosity = core.VerbosityQuiet
 	}
-	ui = getUI(verbosityLevel)
+	ui = core.NewUI(verbosity)
 
 	if len(c.Args()) < 1 {
 		ui.Error(missingParamInputPath)
@@ -115,7 +101,6 @@ func run(c runConfig, showHelp func()) int {
 	}
 	ui.Confidentialf("Writing to: %s", targetFilePath)
 
-	// Show spinner in medium verbosity (not quiet, not verbose)
 	stopSpinner := func() {}
 	if !c.Quiet && !c.Verbose {
 		stopSpinner = core.StartSpinner(fmt.Sprintf("Compressing %s ...", filepath.Base(inputDirPath)))
