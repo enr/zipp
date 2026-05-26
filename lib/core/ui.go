@@ -1,13 +1,13 @@
 package core
 
 import (
-	"bufio"
 	"fmt"
 	"io"
 	"os"
-	"strings"
 
-	"github.com/charmbracelet/lipgloss"
+	"charm.land/huh/v2"
+	"charm.land/lipgloss/v2"
+	"github.com/mattn/go-isatty"
 )
 
 // Verbosity levels for UI output.
@@ -29,7 +29,6 @@ type UI struct {
 	Verbosity int
 	stdout    io.Writer
 	stderr    io.Writer
-	reader    io.Reader
 }
 
 // NewUI returns a UI writing to os.Stdout/Stderr at the given verbosity level.
@@ -38,7 +37,6 @@ func NewUI(verbosity int) *UI {
 		Verbosity: verbosity,
 		stdout:    os.Stdout,
 		stderr:    os.Stderr,
-		reader:    os.Stdin,
 	}
 }
 
@@ -72,18 +70,68 @@ func (u *UI) Confidentialf(format string, args ...interface{}) {
 	}
 }
 
-// QuestionWithDefault prints a prompt and reads a line from stdin.
-// Returns defaultAnswer if the user presses enter without typing anything.
-func (u *UI) QuestionWithDefault(question, defaultAnswer string) (string, error) {
-	fmt.Fprintf(u.stdout, "%s [%s]: ", question, defaultAnswer)
-	r := bufio.NewReader(u.reader)
-	answer, err := r.ReadString('\n')
+func isInteractive() bool {
+	return isatty.IsTerminal(os.Stdin.Fd()) || isatty.IsCygwinTerminal(os.Stdin.Fd())
+}
+
+func newForm(groups ...*huh.Group) *huh.Form {
+	f := huh.NewForm(groups...)
+	if !isInteractive() {
+		f = f.WithAccessible(true)
+	}
+	return f
+}
+
+// Confirm shows an interactive yes/no prompt. Returns the boolean result.
+func (u *UI) Confirm(title string, defaultValue bool) (bool, error) {
+	var result bool = defaultValue
+	err := newForm(
+		huh.NewGroup(
+			huh.NewConfirm().
+				Title(title).
+				Value(&result),
+		),
+	).Run()
 	if err != nil {
-		return defaultAnswer, err
+		return defaultValue, err
 	}
-	answer = strings.TrimSpace(answer)
-	if answer == "" {
-		return defaultAnswer, nil
+	return result, nil
+}
+
+// Input shows an interactive text input prompt. Returns the entered value or defaultValue if empty.
+func (u *UI) Input(title, placeholder, defaultValue string) (string, error) {
+	result := defaultValue
+	err := newForm(
+		huh.NewGroup(
+			huh.NewInput().
+				Title(title).
+				Placeholder(placeholder).
+				Value(&result),
+		),
+	).Run()
+	if err != nil {
+		return defaultValue, err
 	}
-	return answer, nil
+	if result == "" {
+		return defaultValue, nil
+	}
+	return result, nil
+}
+
+// Select shows an interactive selection prompt. Returns the selected value.
+func (u *UI) Select(title string, options []string) (string, error) {
+	var result string
+	opts := make([]huh.Option[string], len(options))
+	for i, o := range options {
+		opts[i] = huh.NewOption(o, o)
+	}
+	err := newForm(
+		huh.NewGroup(
+			huh.NewSelect[string]().
+				Title(title).
+				Options(opts...).
+				Value(&result),
+		),
+	).Run()
+	return result, err
 }

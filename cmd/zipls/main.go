@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/charmbracelet/lipgloss"
+	"charm.land/lipgloss/v2"
 	"github.com/enr/go-files/files"
 	"github.com/enr/zipext"
 	"github.com/mattn/go-isatty"

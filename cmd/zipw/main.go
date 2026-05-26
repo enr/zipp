@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"strings"
 
 	"github.com/urfave/cli"
 	"gopkg.in/yaml.v2"
@@ -77,10 +76,9 @@ func loadParams(c *cli.Context) (core.WriterRequest, error) {
 	ui.Confidentialf("Adding file=%s to zip=%s in path inner=%s using file params=%s", fileToAdd, zipPath, innerPath, paramsFile)
 
 	if fileToAdd == "" && paramsFile == "" {
-		upe, _ := ui.QuestionWithDefault("Do you want to use a params file?", "yes")
-		upe = strings.ToLower(upe)
-		if upe == "yes" || upe == "y" {
-			paramsFile, _ = ui.QuestionWithDefault("Which params file?", "zipw.yml")
+		useParamsFile, _ := ui.Confirm("Do you want to use a params file?", true)
+		if useParamsFile {
+			paramsFile, _ = ui.Input("Which params file?", "zipw.yml", "zipw.yml")
 			yamlFile, err := ioutil.ReadFile(paramsFile)
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "Hint:  %s\n", core.Hint("params_file_missing"))

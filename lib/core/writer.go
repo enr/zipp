@@ -138,15 +138,14 @@ func (w *ZipWriter) checkOverwrite(s step, params WriterRequest) error {
 	if params.NoOverwrite {
 		return fmt.Errorf("entry %q already exists in archive — aborting (use --force to overwrite)", s.innerPath)
 	}
-	answer, err := w.ui.QuestionWithDefault(
+	overwrite, err := w.ui.Confirm(
 		fmt.Sprintf("Warning: %q already exists in the archive. Overwrite?", s.innerPath),
-		"no",
+		false,
 	)
 	if err != nil {
 		return err
 	}
-	answer = strings.ToLower(strings.TrimSpace(answer))
-	if answer != "y" && answer != "yes" {
+	if !overwrite {
 		return fmt.Errorf("skipped: entry %q not overwritten", s.innerPath)
 	}
 	return nil
