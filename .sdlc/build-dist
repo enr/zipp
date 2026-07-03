@@ -78,3 +78,30 @@ for dir in $(find "$dist_dir" -mindepth 1 -maxdepth 1 -type d); do
   zip -r "${dist_folder}.zip" "$dist_folder"
   rm -r "$dist_folder"
 done
+
+# Generate integrity checksums for the distributable artifacts.
+# The checksum file is produced alongside the artifacts so it is
+# published together with them and can be used to verify downloads with:
+#   sha512sum -c SHA512SUMS
+echo "===  Create checksums"
+cd "$dist_dir"
+checksum_file='SHA512SUMS'
+rm -f "$checksum_file"
+if command -v sha512sum >/dev/null 2>&1; then
+  checksum_cmd() { sha512sum "$@"; }
+elif command -v shasum >/dev/null 2>&1; then
+  checksum_cmd() { shasum -a 512 "$@"; }
+else
+  echo "no sha512 checksum tool found (sha512sum or shasum)"
+  exit 1
+fi
+for artifact in *.zip; do
+  [[ -e "$artifact" ]] || continue
+  checksum_cmd "$artifact" >> "$checksum_file"
+done
+[[ -s "$checksum_file" ]] || {
+  echo "no artifacts found to checksum"
+  exit 1
+}
+echo "checksums written to ${dist_dir}/${checksum_file}"
+cat "$checksum_file"
