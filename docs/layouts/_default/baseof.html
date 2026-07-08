@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.Language.Lang | default "en" }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ if .IsHome }}{{ .Site.Title }} — {{ .Site.Params.tagline }}{{ else }}{{ .Title }} — {{ .Site.Title }}{{ end }}</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="{{ "style.css" | absURL | relURL }}">
+</head>
+<body>
+  <div class="app">
+    <aside class="sb">
+      <a class="sb-brand" href="{{ .Site.Home.RelPermalink }}" style="text-decoration: none">
+        <span class="sb-brand-text mono"><span class="fg-cyan">▣</span> zipp</span>
+      </a>
+      <div class="sb-tag">{{ .Site.Params.tagline }}</div>
+
+      <div class="sb-section">
+        <div class="sb-heading">TOOLS</div>
+        <nav class="sb-nav">
+          <a href="#zipw"><span class="num">01</span><span>zipw</span></a>
+          <a href="#zipls"><span class="num">02</span><span>zipls</span></a>
+          <a href="#zipts"><span class="num">03</span><span>zipts</span></a>
+        </nav>
+      </div>
+
+      <div class="sb-section">
+        <div class="sb-heading">PROJECT</div>
+        <nav class="sb-nav">
+          <a href="{{ .Site.Params.repoURL }}"><span class="num">→</span><span>Source</span></a>
+          <a href="{{ .Site.Params.repoURL }}/releases/latest"><span class="num">→</span><span>Releases</span></a>
+          <a href="#license"><span class="num">→</span><span>License</span></a>
+        </nav>
+      </div>
+
+      <div class="sb-foot">
+        <div class="row"><span class="dot"></span> github.com/enr/zipp</div>
+        <div class="row muted">Apache-2.0</div>
+        <div class="row muted">v{{ .Site.Params.currentAppVersion }}</div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="tb">
+        <div class="crumbs">
+          <span>~</span> <span class="sep">/</span> <span>zipp</span> <span class="sep">/</span> <span class="leaf">docs</span>
+        </div>
+        <div class="spacer"></div>
+        <div class="meta">
+          <span><span class="dot"></span> linux · darwin · windows</span>
+          <span class="muted">Apache-2.0</span>
+        </div>
+      </div>
+      <div class="content">
+        {{ block "main" . }}{{ end }}
+      </div>
+    </main>
+  </div>
+</body>
+</html>

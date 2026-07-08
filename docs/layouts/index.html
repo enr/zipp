@@ -1,0 +1,124 @@
+{{ define "main" }}
+<section class="hero">
+  <div class="hero-head">
+    <div class="kbar">
+      <span class="badge info">v{{ .Site.Params.currentAppVersion }}</span>
+      <span class="badge ok">linux · darwin · windows</span>
+      <span class="badge">Apache-2.0</span>
+    </div>
+    <h1>
+      <span class="prompt">$</span>Small, sharp tools for zip archives.
+    </h1>
+    <p class="lede">
+      <code>zipp</code> is a set of command-line utilities to work with zip files:
+      <strong>list</strong> their contents, <strong>timestamp</strong> new archives, and
+      <strong>add files</strong> to existing ones — including nested archives.
+    </p>
+    <div class="cta">
+      <a class="btn primary" href="{{ .Site.Params.repoURL }}/releases/latest">
+        Download <span class="arrow">→</span>
+      </a>
+      <a class="btn" href="{{ .Site.Params.repoURL }}">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38v-1.34c-2.22.48-2.69-1.07-2.69-1.07-.36-.92-.89-1.17-.89-1.17-.73-.5.05-.49.05-.49.81.06 1.23.83 1.23.83.72 1.23 1.88.88 2.34.67.07-.52.28-.88.51-1.08-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.03 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.74.54 1.49v2.21c0 .21.15.46.55.38C13.71 14.53 16 11.54 16 8c0-4.42-3.58-8-8-8z"/>
+        </svg>
+        View source
+      </a>
+    </div>
+    <div class="meta-line">
+      <span><span class="dot"></span> zero-config binaries</span>
+      <span><span class="dot"></span> nested archive support</span>
+    </div>
+  </div>
+
+  <div class="hero-diagram">
+    <div class="dwin">
+      <div class="dwin-tb">
+        <div class="dots"><i></i><i></i><i></i></div>
+        <div class="dwin-title">zipls dist/zipp_linux_amd64.zip</div>
+        <div class="dwin-spacer"></div>
+        <div class="dwin-meta">exit 0</div>
+      </div>
+      <div class="dwin-body">
+<pre style="border:none;background:transparent;padding-left:0;margin:0"><span class="c-com"># list</span>
+<span class="c-cmd">zipls</span> app.zip
+<span class="c-path">app/</span>            <span class="c-dim">dir</span>
+<span class="c-path">app/bin/run</span>     <span class="c-dim">file</span>
+
+<span class="c-com"># timestamped archive</span>
+<span class="c-cmd">zipts</span> testdata/
+<span class="c-ok">✓</span> testdata-20260708.zip
+
+<span class="c-com"># add into an existing zip</span>
+<span class="c-cmd">zipw</span> <span class="c-flag">-f</span> README.md <span class="c-flag">-z</span> app.zip</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pillars">
+  <div class="section-head">
+    <div class="section-label">// THE TOOLBOX</div>
+    <h2 style="border: none; padding: 0; margin: 0">Three commands, one job each.</h2>
+  </div>
+  <div class="pillar-grid">
+    <div class="pillar">
+      <div class="pillar-head">
+        <span class="pillar-tag" style="color: var(--green); border-color: var(--green)">01</span>
+        <span class="pillar-title">zipw</span>
+      </div>
+      <p>Add a file to an existing archive — including nested writes into a jar inside a war inside an ear. Interactive, flag-driven, or YAML-configured.</p>
+      <code class="pillar-mono">zipw -f README.md -i archive/readme.md -z app.zip</code>
+    </div>
+    <div class="pillar">
+      <div class="pillar-head">
+        <span class="pillar-tag" style="color: var(--blue); border-color: var(--blue)">02</span>
+        <span class="pillar-title">zipls</span>
+      </div>
+      <p>List a zip's contents with sizes, timestamps, grep/exclude filters and sorting — a quick, readable view into any archive.</p>
+      <code class="pillar-mono">zipls -s -t --sort size app.zip</code>
+    </div>
+    <div class="pillar">
+      <div class="pillar-head">
+        <span class="pillar-tag" style="color: var(--orange); border-color: var(--orange)">03</span>
+        <span class="pillar-title">zipts</span>
+      </div>
+      <p>Zip a directory into an archive whose name carries a timestamp suffix — handy for snapshots and backups, with exclude patterns.</p>
+      <code class="pillar-mono">zipts -x 'vendor/*' -o /tmp/backups .</code>
+    </div>
+  </div>
+</section>
+
+<div class="doc-content">
+  {{ .Content }}
+</div>
+
+<footer class="foot">
+  <div class="foot-grid">
+    <div>
+      <div class="foot-brand mono">
+        <span class="fg-cyan">▣</span> zipp <span class="muted">v{{ .Site.Params.currentAppVersion }}</span>
+      </div>
+      <p class="muted" style="font-size: 12.5px">
+        Command-line zip utilities: list, timestamp and update archives.
+      </p>
+    </div>
+    <div>
+      <div class="foot-h">TOOLS</div>
+      <a href="#zipw">zipw</a>
+      <a href="#zipls">zipls</a>
+      <a href="#zipts">zipts</a>
+    </div>
+    <div>
+      <div class="foot-h">PROJECT</div>
+      <a href="{{ .Site.Params.repoURL }}">GitHub</a>
+      <a href="{{ .Site.Params.repoURL }}/releases">Releases</a>
+      <a href="{{ .Site.Params.repoURL }}/issues">Issues</a>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span class="muted">© 2016–{{ now.Format "2006" }} — Apache-2.0</span>
+    <span class="muted mono">built {{ now.Format "2006-01-02" }}</span>
+  </div>
+</footer>
+{{ end }}

@@ -1,0 +1,16 @@
+baseURL = "https://enr.github.io/zipp/"
+languageCode = "en-us"
+title = "zipp"
+
+disableKinds = ["taxonomy", "term", "RSS", "sitemap"]
+
+[params]
+  tagline = "Command-line zip utilities."
+  repoURL = "https://github.com/enr/zipp"
+  currentAppVersion = "0.9.0"
+
+[markup]
+  [markup.goldmark.renderer]
+    unsafe = true
+  [markup.highlight]
+    noClasses = false
